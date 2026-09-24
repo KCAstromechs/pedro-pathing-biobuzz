@@ -16,8 +16,8 @@ public abstract class RobotOpMode extends OpMode {
         schedule(
                 robot.drivetrain.periodic(),
                 robot.flywheel.periodic(),
-                robot.turret.periodic(),
-                robot.tapeSensor.periodic(),
+//                robot.turret.periodic(),
+//                robot.tapeSensor.periodic(),
                 robot.intake.periodic()
         );
     }

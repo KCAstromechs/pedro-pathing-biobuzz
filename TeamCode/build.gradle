@@ -24,6 +24,16 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url = 'https://maven.brott.dev/'
+    }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
+    implementation "com.acmerobotics.dashboard:dashboard:0.5.1"
+    implementation "com.acmerobotics.slothboard:dashbaord:0.2.4+0.5.1"
+
+    implementation "com.bylazar.sloth:fullpanels:0.2.4+1.0.12"
 }

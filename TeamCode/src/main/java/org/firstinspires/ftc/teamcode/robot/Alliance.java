@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 
-import static org.firstinspires.ftc.teamcode.math.PoseMirror.mirror;
+import static org.firstinspires.ftc.teamcode.util.PoseMirror.mirror;
 
 public enum Alliance {
     RED(new Pose(138, 138)),

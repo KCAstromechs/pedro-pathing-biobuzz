@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -21,10 +22,15 @@ public class Intake {
 
     private final DcMotorEx intakeMotor;
 
+    private final CRServo intakeRight;
+    private final CRServo intakeLeft;
+
     private final Telemetry telemetry;
 
     public Intake(Robot robot) {
         intakeMotor = robot.hardwareMap.get(DcMotorEx.class, "intake");
+        intakeRight = robot.hardwareMap.get(CRServo.class, "rightIntake");
+        intakeLeft = robot.hardwareMap.get(CRServo.class, "leftIntake");
         telemetry = robot.telemetry;
     }
 

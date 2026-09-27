@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.math;
+package org.firstinspires.ftc.teamcode.util;
 
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.MathFunctions;
+import com.pedropathing.math.Pose;
 
 public class PoseMirror {
     public static Pose mirror(Pose pose) {
-        return new Pose(141.5 - pose.getX(), pose.getY(), Math.PI - pose.getHeading());
+        return new Pose(141.5 - pose.x(), pose.y(), Math.PI - pose.heading());
     }
 }

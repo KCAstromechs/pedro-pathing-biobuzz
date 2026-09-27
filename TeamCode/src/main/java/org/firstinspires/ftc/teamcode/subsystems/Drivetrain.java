@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.control.PIDFCoefficients;
-import com.pedropathing.control.PIDFController;
+import com.pedropathing.controllers.PIDController;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
+//import com.pedropathing.geometry.Pose;
+import com.pedropathing.math.Pose;
 import com.pedropathing.ivy.Command;
-import com.pedropathing.paths.PathChain;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,16 +20,18 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Config
 public class Drivetrain {
-    public static PIDFCoefficients headingCoefficients = new PIDFCoefficients(1.75, 0, 0.09, 0);
     public static double gateOpenHeadingDegrees = 36.5;
-    private static Pose poseTransfer = new Pose();
+    private static Pose poseTransfer = Pose.zero();
     public final DcMotorEx frontLeft;
     public final DcMotorEx frontRight;
     public final DcMotorEx backLeft;
     public final DcMotorEx backRight;
     public final Follower follower;
     private final Telemetry telemetry;
-    private final PIDFController headingController = new PIDFController(headingCoefficients);
+    public static double headingP = 1.75;
+    public static double headingI = 0;
+    public static double headingD = 0.09;
+    private final PIDController headingController = new PIDController(headingP, headingI, headingD);
     private boolean lockHeading = false;
     private double headingTargetRadians = 0;
 
@@ -70,14 +72,21 @@ public class Drivetrain {
     }
 
     public void arcadeDrive(double forward, double strafe, double turn, Alliance alliance) {
-        double headingRadians = follower.getHeading();
-
-        forward = signedSquare(forward);
-        strafe = signedSquare(strafe);
+        double headingRadians = follower.pose().heading();
 
         if (lockHeading) {
-            headingController.updateError(AngleUnit.normalizeRadians(headingTargetRadians - headingRadians));
-            turn = -headingController.run();
+            headingController.kP = headingP;
+            headingController.kI = headingI;
+            headingController.kD = headingD;
+
+            double headingError = AngleUnit.normalizeRadians(
+                    headingTargetRadians - headingRadians
+            );
+
+            turn = -headingController.calculate(
+                    headingTargetRadians,
+                    headingError
+            );
         } else {
             turn = signedSquare(turn);
         }
@@ -100,7 +109,7 @@ public class Drivetrain {
     }
 
     public Pose getPose() {
-        return follower.getPose();
+        return follower.pose();
     }
 
     public void setPose(Pose pose) {
@@ -108,25 +117,25 @@ public class Drivetrain {
     }
 
     public void setStartingPose(Pose pose) {
-        follower.setStartingPose(pose);
+        follower.setPose(pose);
     }
 
     public void usePreviousStartingPose() {
         setStartingPose(poseTransfer);
     }
 
-    public Command followPath(PathChain path) {
+    public Command followPath(Path path) {
         return follow(follower, path);
     }
 
     public Command periodic() {
         return infinite(() -> {
             follower.update();
-            poseTransfer = follower.getPose();
+            poseTransfer = follower.pose();
 
-            telemetry.addData("Current X", follower.getPose().getX());
-            telemetry.addData("Current Y", follower.getPose().getY());
-            telemetry.addData("Current Heading", Math.toDegrees(follower.getHeading()));
+            telemetry.addData("Current X", follower.pose().x());
+            telemetry.addData("Current Y", follower.pose().y());
+            telemetry.addData("Current Heading", Math.toDegrees(follower.pose().heading()));
             telemetry.addData("Heading Locked", lockHeading);
             telemetry.addData("Heading Target", headingTargetRadians);
         });

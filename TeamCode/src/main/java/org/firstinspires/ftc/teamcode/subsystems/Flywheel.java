@@ -21,7 +21,7 @@ public class Flywheel {
     public static boolean override = false;
     public static double overrideTarget = 1000;
     private final DcMotorEx flywheelMotorTop;
-    private final DcMotorEx flywheelMotorBottom;
+//    private final DcMotorEx flywheelMotorBottom;
     private final Telemetry telemetry;
     private final Drivetrain drivetrain;
     private boolean tempOverride = false;
@@ -29,9 +29,9 @@ public class Flywheel {
     private double target = 0;
 
     public Flywheel(Robot robot) {
-        flywheelMotorTop = robot.hardwareMap.get(DcMotorEx.class, "flywheelTop");
-        flywheelMotorBottom = robot.hardwareMap.get(DcMotorEx.class, "flywheelBottom");
-        flywheelMotorBottom.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheelMotorTop = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
+//        flywheelMotorBottom = robot.hardwareMap.get(DcMotorEx.class, "flywheelBottom");
+//        flywheelMotorBottom.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry = robot.telemetry;
         drivetrain = robot.drivetrain;
@@ -48,11 +48,11 @@ public class Flywheel {
 
     private void setPower(double power) {
         flywheelMotorTop.setPower(power);
-        flywheelMotorBottom.setPower(power);
+//        flywheelMotorBottom.setPower(power);
     }
 
     private double getVelocity() {
-        return flywheelMotorBottom.getVelocity();
+        return -flywheelMotorTop.getVelocity();
     }
 
     public boolean atTarget() {
@@ -86,7 +86,7 @@ public class Flywheel {
 
             telemetry.addData("Flywheel Velocity", getVelocity());
             telemetry.addData("Flywheel Target", target);
-            telemetry.addData("Flywheel Power", flywheelMotorBottom.getPower());
+            telemetry.addData("Flywheel Power", -flywheelMotorTop.getPower());
         });
     }
 }

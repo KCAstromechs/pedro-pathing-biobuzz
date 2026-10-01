@@ -32,8 +32,8 @@ public class Constants {
         config.name.set("pinpoint");
 
         // offsets for pods
-        config.xPodOffset.set(4.091074485478439);
-        config.yPodOffset.set(-6.032020989365465);
+        config.xPodOffset.set(-7.184);
+        config.yPodOffset.set(7.217);
 
         // distanceUnit(INCH) -> explicit offset and reported-position units.
         config.offsetUnits.set(DistanceUnit.INCH);
@@ -59,6 +59,11 @@ public class Constants {
         config.timeoutConstraint.set(100.0); // Milliseconds, unchanged
 
         // MORE SPACE FOR PEDRO 3 AUTOTUNE settings
+        config.maxAchievableForwardVelocity.set(50.0);
+        config.maxAchievableStrafeVelocity.set(50.0);
+
+        config.naturalForwardDeceleration.set(50.0);
+        config.naturalStrafeDeceleration.set(50.0);
     });
 
     public static Follower createFollower(HardwareMap hardwareMap) {

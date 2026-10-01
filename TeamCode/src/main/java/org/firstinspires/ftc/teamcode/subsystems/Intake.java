@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
@@ -31,6 +33,7 @@ public class Intake {
         intakeMotor = robot.hardwareMap.get(DcMotorEx.class, "intake");
         intakeRight = robot.hardwareMap.get(CRServo.class, "rightIntake");
         intakeLeft = robot.hardwareMap.get(CRServo.class, "leftIntake");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         telemetry = robot.telemetry;
     }
 

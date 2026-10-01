@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.bylazar.telemetry.PanelsTelemetry;
+//import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,8 +19,8 @@ public class Robot {
         hardwareMap = opMode.hardwareMap;
         telemetry = new MultipleTelemetry(
                 opMode.telemetry,
-                FtcDashboard.getInstance().getTelemetry(),
-                PanelsTelemetry.INSTANCE.getFtcTelemetry()
+                FtcDashboard.getInstance().getTelemetry()
+//                PanelsTelemetry.INSTANCE.getFtcTelemetry()
         );
 
         drivetrain = new Drivetrain(this);

@@ -36,6 +36,9 @@ public class KitBotMove extends RobotOpMode {
                 Alliance.current
         );
 
+        if (gamepad1.ywasPressed()) robot.drivetrain.resetGyro().schedule();
+        if (gamepad1.xwasPressed()) robot.drivetrain.unResetGyro().schedule();
+
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()

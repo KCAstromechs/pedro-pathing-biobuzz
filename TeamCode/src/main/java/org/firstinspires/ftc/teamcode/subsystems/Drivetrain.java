@@ -36,6 +36,7 @@ public class Drivetrain {
     private final PIDController headingController = new PIDController(headingP, headingI, headingD);
     private boolean lockHeading = false;
     private double headingTargetRadians = 0;
+    private double headingOffset = 0;
 
     public Drivetrain(Robot robot) {
         follower = Constants.createFollower(robot.hardwareMap);
@@ -73,9 +74,25 @@ public class Drivetrain {
         lockHeading = false;
     }
 
+    /**
+     * Resets the field-centric forward direction to the robot's current heading
+     * while preserving its absolute (x, y) coordinates.
+     */
+    public void resetFieldCentricHeading() {
+        this.headingOffset = follower.getHeading();
+    }
+
+    /**
+     * Resets the heading offset back to 0 (aligned with true field zero).
+     */
+    public void clearHeadingOffset() {
+        this.headingOffset = 0.0;
+    }
+
     public void arcadeDrive(double forward, double strafe, double turn, Alliance alliance) {
-        // double headingRadians = follower.pose().heading();
-        double headingRadians = follower.pose().heading() - Math.PI / 2;
+        // double headingRadians = follower.pose().heading(); // was goofy/didn't work for us
+        double rawHeading = follower.pose().heading() - Math.PI / 2; // 
+        double headingRadians = AngleUnit.normalizeRadians(rawHeading - headingOffset);
 
         if (lockHeading) {
             headingController.kP = headingP;
@@ -83,7 +100,7 @@ public class Drivetrain {
             headingController.kD = headingD;
 
             double headingError = AngleUnit.normalizeRadians(
-                    headingTargetRadians - headingRadians
+                    headingTargetRadians - rawHeading
             );
 
             turn = -headingController.calculate(
@@ -125,6 +142,18 @@ public class Drivetrain {
 
     public void usePreviousStartingPose() {
         setStartingPose(poseTransfer);
+    }
+
+    public Command resetGyro() {
+        return instant(() -> {
+            resetFieldCentricHeading();
+        });
+    }
+
+    public Command unResetGyro() {
+        return instant(() -> {
+            clearHeadingOffset();
+        });
     }
 
     public Command followPath(Path path) {

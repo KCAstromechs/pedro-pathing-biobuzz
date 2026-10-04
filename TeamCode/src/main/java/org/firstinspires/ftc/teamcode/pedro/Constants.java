@@ -21,8 +21,8 @@ public class Constants {
         config.frontLeftName.set("frontLeft");
 
         // TODO change directions as needed
-        config.frontLeftDirection.set(DcMotorSimple.Direction.FORWARD);
-        config.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        config.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        config.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);
         config.frontRightDirection.set(DcMotorSimple.Direction.REVERSE);
         config.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
     });

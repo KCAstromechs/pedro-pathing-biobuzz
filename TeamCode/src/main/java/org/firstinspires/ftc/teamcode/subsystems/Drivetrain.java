@@ -9,6 +9,8 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -72,7 +74,8 @@ public class Drivetrain {
     }
 
     public void arcadeDrive(double forward, double strafe, double turn, Alliance alliance) {
-        double headingRadians = follower.pose().heading();
+        // double headingRadians = follower.pose().heading();
+        double headingRadians = follower.pose().heading() - Math.PI / 2;
 
         if (lockHeading) {
             headingController.kP = headingP;
@@ -102,10 +105,10 @@ public class Drivetrain {
 
         double denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(turn), 1);
 
-        frontLeft.setPower((y + x + turn) / denominator);
-        frontRight.setPower((y - x - turn) / denominator);
-        backLeft.setPower((y - x + turn) / denominator);
-        backRight.setPower((y + x - turn) / denominator);
+        frontLeft.setPower((y - x + turn) / denominator);
+        frontRight.setPower((y + x + turn) / denominator);
+        backLeft.setPower((y + x - turn) / denominator);
+        backRight.setPower((y - x - turn) / denominator);
     }
 
     public Pose getPose() {

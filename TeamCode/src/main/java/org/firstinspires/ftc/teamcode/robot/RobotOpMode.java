@@ -18,7 +18,8 @@ public abstract class RobotOpMode extends OpMode {
                 robot.flywheel.periodic(),
 //                robot.turret.periodic(),
 //                robot.tapeSensor.periodic(),
-                robot.intake.periodic()
+                robot.intake.periodic(),
+                robot.kicker.periodic()
         );
     }
 

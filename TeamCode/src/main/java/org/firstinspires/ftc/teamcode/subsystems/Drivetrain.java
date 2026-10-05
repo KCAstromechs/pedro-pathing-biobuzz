@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import static com.pedropathing.ivy.commands.Commands.infinite;
+import static com.pedropathing.ivy.commands.Commands.instant;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 @Config
@@ -79,7 +80,7 @@ public class Drivetrain {
      * while preserving its absolute (x, y) coordinates.
      */
     public void resetFieldCentricHeading() {
-        this.headingOffset = follower.getHeading();
+        this.headingOffset = follower.pose().heading();
     }
 
     /**

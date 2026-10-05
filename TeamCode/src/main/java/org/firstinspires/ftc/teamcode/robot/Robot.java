@@ -14,6 +14,7 @@ public class Robot {
     public final Drivetrain drivetrain;
     public final Intake intake;
     public final Flywheel flywheel;
+    public final Kicker kicker;
 
     public Robot(OpMode opMode) {
         hardwareMap = opMode.hardwareMap;
@@ -26,5 +27,6 @@ public class Robot {
         drivetrain = new Drivetrain(this);
         intake = new Intake(this);
         flywheel = new Flywheel(this);
+        kicker = new Kicker(this);
     }
 }

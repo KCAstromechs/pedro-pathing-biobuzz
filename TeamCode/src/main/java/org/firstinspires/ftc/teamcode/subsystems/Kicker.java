@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import static com.pedropathing.ivy.commands.Commands.*;
 
 @Config
-public class Intake {
+public class Kicker {
     private boolean slowMode = false;
     private Mode mode = Mode.OFF;
     public static double fastPower = -1;
@@ -22,39 +22,40 @@ public class Intake {
     public static double reversePower = 1;
     public static double shortReverseTimeMs = 150;
 
-    private final DcMotorEx intakeMotor;
-
-    private final CRServo intakeRight;
-    private final CRServo intakeLeft;
+    private final CRServo kickerServo;
 
     private final Telemetry telemetry;
 
-    public Intake(Robot robot) {
-        intakeMotor = robot.hardwareMap.get(DcMotorEx.class, "intake");
-        intakeRight = robot.hardwareMap.get(CRServo.class, "rightIntakeServo");
-        intakeLeft = robot.hardwareMap.get(CRServo.class, "leftIntakeServo");
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    public Kicker(Robot robot) {
+        kickerServo = robot.hardwareMap.get(CRServo.class, "kicker");
+        kickerServo.setDirection(CRServo.Direction.FORWARD);
         telemetry = robot.telemetry;
     }
 
-    public Command on() {
-        return instant(() -> mode = Mode.ON).requiring(intakeMotor);
+    public void turnOn() {
+        mode = Mode.ON;
     }
 
-    public Command off() {
-        return instant(() -> mode = Mode.OFF).requiring(intakeMotor);
+    public void turnOff() {
+        mode = Mode.OFF;
     }
 
-    public Command reverse() {
-        return instant(() -> mode = Mode.REVERSE).requiring(intakeMotor);
+    public void reverse() {
+        mode = Mode.REVERSE;
     }
 
     public Command shortReverse() {
-        return reverse().then(waitMs(shortReverseTimeMs)).then(on());
+        return instant(() -> reverse())
+                .then(waitMs(shortReverseTimeMs))
+                .then(instant(() -> turnOn()));
     }
 
-    public Command toggle() {
-        return conditional(() -> mode == Mode.OFF, on(), off());
+    public void toggle() {
+        if (mode == Mode.OFF) {
+            turnOn();
+        } else {
+            turnOff();
+        }
     }
 
     public void slowDown() {
@@ -69,18 +70,15 @@ public class Intake {
         return infinite(() -> {
             switch (mode) {
                 case ON:
-                    intakeMotor.setPower(slowMode ? slowPower : fastPower);
+                    kickerServo.setPower(slowMode ? slowPower : fastPower);
                     break;
                 case OFF:
-                    intakeMotor.setPower(offPower);
+                    kickerServo.setPower(offPower);
                     break;
                 case REVERSE:
-                    intakeMotor.setPower(reversePower);
+                    kickerServo.setPower(reversePower);
                     break;
             }
-
-            telemetry.addData("Intake Current", intakeMotor.getCurrent(CurrentUnit.MILLIAMPS));
-            telemetry.addData("Intake Velocity", intakeMotor.getVelocity());
         });
     }
 

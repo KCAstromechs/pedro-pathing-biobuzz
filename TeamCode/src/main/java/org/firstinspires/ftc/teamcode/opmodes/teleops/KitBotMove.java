@@ -36,8 +36,16 @@ public class KitBotMove extends RobotOpMode {
                 Alliance.current
         );
 
-        if (gamepad1.ywasPressed()) robot.drivetrain.resetGyro().schedule();
-        if (gamepad1.xwasPressed()) robot.drivetrain.unResetGyro().schedule();
+        if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();
+        if (gamepad1.xWasPressed()) robot.drivetrain.unResetGyro().schedule();
+
+        //kicker
+        if(gamepad2.left_trigger >= 0.1) robot.kicker.turnOn();
+        if(gamepad2.left_trigger < 0.1) robot.kicker.turnOff();
+
+        //flywheel
+        if (gamepad2.right_trigger_pressed) robot.flywheel.turnOn();
+        if (!gamepad2.right_trigger_pressed) robot.flywheel.turnOff();
 
         // Pose turretPose = ...
 

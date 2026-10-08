@@ -34,6 +34,8 @@ public class Intake {
         intakeRight = robot.hardwareMap.get(CRServo.class, "rightIntakeServo");
         intakeLeft = robot.hardwareMap.get(CRServo.class, "leftIntakeServo");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeLeft.setDirection(CRServo.Direction.REVERSE);
+        intakeRight.setDirection(CRServo.Direction.FORWARD);
         telemetry = robot.telemetry;
     }
 
@@ -70,12 +72,18 @@ public class Intake {
             switch (mode) {
                 case ON:
                     intakeMotor.setPower(slowMode ? slowPower : fastPower);
+                    intakeLeft.setPower(slowMode ? slowPower : fastPower);
+                    intakeRight.setPower(slowMode ? slowPower : fastPower);
                     break;
                 case OFF:
                     intakeMotor.setPower(offPower);
+                    intakeLeft.setPower(offPower);
+                    intakeRight.setPower(offPower);
                     break;
                 case REVERSE:
                     intakeMotor.setPower(reversePower);
+                    intakeLeft.setPower(reversePower);
+                    intakeRight.setPower(reversePower);
                     break;
             }
 

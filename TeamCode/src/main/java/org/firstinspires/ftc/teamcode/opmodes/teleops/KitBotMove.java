@@ -44,15 +44,15 @@ public class KitBotMove extends RobotOpMode {
         if(gamepad2.left_trigger < 0.1) robot.kicker.turnOff();
 
         //flywheel
-        if (gamepad2.right_trigger_pressed) robot.flywheel.turnOn();
-        if (!gamepad2.right_trigger_pressed) robot.flywheel.turnOff();
+        if (gamepad2.right_trigger >= 0.1) robot.flywheel.turnOn();
+        if (gamepad2.right_trigger < 0.1) robot.flywheel.turnOff();
 
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()
-        if (gamepad1.rightBumperWasPressed()) robot.intake.on().schedule();
-        if (gamepad1.rightBumperWasReleased()) robot.intake.off().schedule();
-        if (gamepad1.leftBumperWasPressed()) robot.intake.shortReverse().schedule();
+        if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
+        if (gamepad2.rightBumperWasReleased()) robot.intake.off().schedule();
+        if (gamepad2.leftBumperWasPressed()) robot.intake.shortReverse().schedule();
 
 
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;

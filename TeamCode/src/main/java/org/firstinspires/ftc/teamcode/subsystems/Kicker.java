@@ -28,7 +28,7 @@ public class Kicker {
 
     public Kicker(Robot robot) {
         kickerServo = robot.hardwareMap.get(CRServo.class, "kicker");
-        kickerServo.setDirection(CRServo.Direction.FORWARD);
+        kickerServo.setDirection(CRServo.Direction.REVERSE);
         telemetry = robot.telemetry;
     }
 

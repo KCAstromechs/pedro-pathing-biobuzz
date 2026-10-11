@@ -34,6 +34,8 @@ public class BasicMotorTest extends LinearOpMode {
             // If Gamepad 1 'A' button is held, run at full speed; otherwise stop
             if (gamepad1.a) {
                 testMotor.setPower(1.0);
+            } else if (gamepad1.b) {
+                testMotor.setPower(0.3);
             } else {
                 testMotor.setPower(0.0);
             }

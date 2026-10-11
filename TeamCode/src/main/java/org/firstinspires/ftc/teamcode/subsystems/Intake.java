@@ -34,8 +34,8 @@ public class Intake {
         intakeRight = robot.hardwareMap.get(CRServo.class, "rightIntakeServo");
         intakeLeft = robot.hardwareMap.get(CRServo.class, "leftIntakeServo");
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeLeft.setDirection(CRServo.Direction.REVERSE);
-        intakeRight.setDirection(CRServo.Direction.FORWARD);
+        intakeLeft.setDirection(CRServo.Direction.FORWARD);
+        intakeRight.setDirection(CRServo.Direction.REVERSE);
         telemetry = robot.telemetry;
     }
 

@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.pedro;
 
 import com.pedropathing.algorithm.Foresight;
 import com.pedropathing.algorithm.ForesightConfig;
+import com.pedropathing.controllers.Controller;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Matrix;
+import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
 import com.pedropathing.revhub.localizers.PinpointConfig;
@@ -12,65 +15,65 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class Constants {
-
-    public static MecanumConfig drivetrainConfig = new MecanumConfig(config -> {
-        config.frontRightName.set("frontRight");
-        config.backRightName.set("backRight");
-        config.backLeftName.set("backLeft");
-        config.frontLeftName.set("frontLeft");
-
-        // TODO change directions as needed
-        config.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
-        config.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);
-        config.frontRightDirection.set(DcMotorSimple.Direction.REVERSE);
-        config.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
-    });
-
-    public static PinpointConfig localizerConfig = new PinpointConfig(config -> {
-        // hardwareMapName -> name; hardware-map string is unchanged
-        config.name.set("pinpoint");
-
-        // offsets for pods
-        config.xPodOffset.set(-7.184);
-        config.yPodOffset.set(7.217);
-
-        // distanceUnit(INCH) -> explicit offset and reported-position units.
-        config.offsetUnits.set(DistanceUnit.INCH);
-        config.globalDistanceUnit.set(DistanceUnit.INCH);
-
-        // encoderResolution(enum) -> podType; original four-bar pods retained.
-        config.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-
-        // forwardEncoderDirection/strafeEncoderDirection -> x/yPodDirection.
-        // TODO change directions as needed
-        config.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        config.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
-    });
-
-    public static ForesightConfig foresightConfig = new ForesightConfig(config -> {
-        config.maxAchievableForwardVelocity.set(74.0662); // TODO change for tuning
-        config.maxAchievableStrafeVelocity.set(55.7839); // TODO change for tuning
-
-        // SPACE FOR PEDRO 3 AUTOTUNE settings
-
-        // Original: new PathConstraints(0.99, 100, 1, 1)... whatever that means
-        config.parametricTConstraint.set(0.01); // 1 - 0.99
-        config.timeoutConstraint.set(100.0); // Milliseconds, unchanged
-
-        // MORE SPACE FOR PEDRO 3 AUTOTUNE settings
-        config.maxAchievableForwardVelocity.set(50.0);
-        config.maxAchievableStrafeVelocity.set(50.0);
-
-        config.naturalForwardDeceleration.set(50.0);
-        config.naturalStrafeDeceleration.set(50.0);
-    });
-
-    public static Follower createFollower(HardwareMap hardwareMap) {
+    public static Follower create(HardwareMap h) {
+        // return new Follower(Drivetrain, Localizer, Foresight);
         return new Follower(
-                new PinpointLocalizer(hardwareMap, localizerConfig),
-                new Mecanum(hardwareMap, drivetrainConfig),
-                new Foresight(foresightConfig)
+            new PinpointLocalizer(h, localizerConfig),
+            new Mecanum(h, drivetrainConfig),
+            new Foresight(foresightConfig)
         );
     }
+
+    public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
+        c.frontLeftName.set("frontLeft");
+        c.frontRightName.set("frontRight");
+        c.backLeftName.set("backLeft");
+        c.backRightName.set("backRight");
+        c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
+        c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+
+        c.manualBrakeMode.set(true);
+    });
+
+    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
+        c.name.set("pinpoint");
+        c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        c.xPodOffset.set(6.596677885280819); // manual: -7.184
+        c.yPodOffset.set(-7.4570020540492745); // manual: 7.217
+        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        c.globalDistanceUnit.set(DistanceUnit.INCH);
+        c.offsetUnits.set(DistanceUnit.INCH);
+    });
+
+    public static ForesightConfig foresightConfig = new ForesightConfig(
+            c -> {
+                Controller primaryTranslationalForward = Controller.proportional(0.20295588372940623);
+                Controller secondaryTranslationalForward = Controller.proportional(0.07498677595692405);
+                Controller primaryTranslationalLateral = Controller.proportional(0.2700768513270842);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.09978617997898039);
+
+                c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+                c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+
+                c.coast.set(Controller.proportionalFeedforward(0.016288227851107805));
+                c.brake.set(Controller.proportionalFeedforward(0.013844993673441634));
+
+                c.headingFeedback.set(Controller.proportional(3.6569717283769325));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.05289465019832839, 0.0031321382416240376));
+
+                c.linearBrakeCoefficients.set(Matrix.diag(0.07460235979226991, 0.05747613265885763));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(7.659647418843692E-4, 0.0010560744996894586));
+
+                c.maxAchievableForwardVelocity.set(63.36411943976557);
+                c.maxAchievableStrafeVelocity.set(55.236670226807824);
+                c.naturalForwardDeceleration.set(32.077292921871106);
+                c.naturalStrafeDeceleration.set(57.81980441879844);
+            }
+    );
 }

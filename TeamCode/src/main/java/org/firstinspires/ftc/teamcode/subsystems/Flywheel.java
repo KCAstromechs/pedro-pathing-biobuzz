@@ -3,30 +3,35 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.math.TurretLocation;
 //import org.firstinspires.ftc.teamcode.math.WaveLength;
-import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import static com.pedropathing.ivy.commands.Commands.infinite;
 
 @Config
 public class Flywheel {
-    public static double kP = 0.01;
-    public static double kS = 0.065;
-    public static double kV = 0.000365;
-    public static int velocityTolerance = 25;
+
+    public static class FlywheelParams {
+        public static double kP = 0.01;
+        public static double kS = 0.065;
+        public static double kV = 0.000365;
+        public static int velocityTolerance = 25;
+        private double shootingVelocity = 1000; //in encoder ticks/sec
+        private double targetVelocity = 0;
+    }
+
+    public static FlywheelParams params = new FlywheelParams();
+    
     public static boolean override = false;
-    public static double overrideTarget = 1000;
     private final DcMotorEx flywheelMotorTop;
 //    private final DcMotorEx flywheelMotorBottom;
     private final Telemetry telemetry;
     private final Drivetrain drivetrain;
     private boolean tempOverride = false;
     private boolean on = false;
-    private double target = 0;
 
     public Flywheel(Robot robot) {
         flywheelMotorTop = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
@@ -37,8 +42,13 @@ public class Flywheel {
         drivetrain = robot.drivetrain;
     }
 
-    public void setTarget(double target) {
-        this.target = target;
+    public void setShootingVelocity(double shootingVelocity) {
+        this.params.shootingVelocity = shootingVelocity;
+        tempOverride = true;
+    }
+
+    public void setTargetVelocity(double targetVelocity) {
+        this.params.targetVelocity = targetVelocity;
         tempOverride = true;
     }
 
@@ -56,7 +66,7 @@ public class Flywheel {
     }
 
     public boolean atTarget() {
-        return Math.abs(target - getVelocity()) <= velocityTolerance;
+        return Math.abs(params.targetVelocity - getVelocity()) <= params.velocityTolerance;
     }
 
     public void turnOn() {
@@ -77,16 +87,16 @@ public class Flywheel {
         return infinite(() -> {
             if (on) {
 //                target = override ? overrideTarget : (tempOverride ? target : WaveLength.getVelocityWithInterpolation(TurretLocation.getTurretPose(drivetrain.getPose()), Alliance.current));
-                target = 10;
-                setPower(kP * (target - getVelocity()) + kV * target + kS * Math.signum(target));
+                params.targetVelocity = params.shootingVelocity;
+                setPower(params.kP * (params.targetVelocity - getVelocity()) + params.kV * params.targetVelocity + params.kS * Math.signum(params.targetVelocity));
             } else {
-                target = 0;
+                params.targetVelocity = 0;
                 setPower(0);
             }
 
             telemetry.addData("Flywheel Velocity", getVelocity());
-            telemetry.addData("Flywheel Target", target);
-            telemetry.addData("Flywheel Power", -flywheelMotorTop.getPower());
+            telemetry.addData("Flywheel Target", params.targetVelocity);
+            telemetry.addData("Flywheel Power", flywheelMotorTop.getPower());
         });
     }
 }

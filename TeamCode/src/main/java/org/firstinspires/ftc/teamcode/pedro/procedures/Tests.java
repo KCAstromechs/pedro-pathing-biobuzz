@@ -16,6 +16,8 @@ import com.pedropathing.utils.Angle;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -303,7 +305,21 @@ class TestsLocalization extends TuningOpMode<Boolean> {
         while (opModeIsActive()) {
             drivetrain.drive(new DrivePowers(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x), true);
             localizer.update();
-            telemetry.addData("Pose", localizer.pose());
+            telemetry.addData("Pose.x", BigDecimal.valueOf(
+                    localizer.pose().x())
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue()
+            );
+            telemetry.addData("Pose.y", BigDecimal.valueOf(
+                            localizer.pose().y())
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue()
+            );
+            telemetry.addData("Pose.heading", BigDecimal.valueOf(
+                            localizer.pose().heading())
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue()
+            );
             telemetry.update();
         }
         return true;

@@ -30,8 +30,8 @@ public class KitBotMove extends RobotOpMode {
         if (Math.abs(gamepad1.right_stick_x) >= 0.1) robot.drivetrain.unlockHeading();
 
         robot.drivetrain.arcadeDrive(
-                -gamepad1.left_stick_y,
                 gamepad1.left_stick_x,
+                -gamepad1.left_stick_y,
                 gamepad1.right_stick_x,
                 Alliance.current
         );

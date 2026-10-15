@@ -40,7 +40,7 @@ public class Drivetrain {
     private double headingOffset = 0;
 
     public Drivetrain(Robot robot) {
-        follower = Constants.createFollower(robot.hardwareMap);
+        follower = Constants.create(robot.hardwareMap);
         frontLeft = robot.hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = robot.hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = robot.hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -50,6 +50,10 @@ public class Drivetrain {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         telemetry = robot.telemetry;
     }
@@ -123,10 +127,10 @@ public class Drivetrain {
 
         double denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(turn), 1);
 
-        frontLeft.setPower((y - x + turn) / denominator);
-        frontRight.setPower((y + x + turn) / denominator);
-        backLeft.setPower((y + x - turn) / denominator);
-        backRight.setPower((y - x - turn) / denominator);
+        frontLeft.setPower((y - x + turn) / denominator); // - +
+        frontRight.setPower((y + x - turn) / denominator); // + +
+        backLeft.setPower((y + x + turn) / denominator); // + -
+        backRight.setPower((y - x - turn) / denominator); // - -
     }
 
     public Pose getPose() {

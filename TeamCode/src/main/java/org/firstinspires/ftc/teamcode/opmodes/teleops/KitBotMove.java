@@ -50,11 +50,12 @@ public class KitBotMove extends RobotOpMode {
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()
+        // intake
         if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
         if (gamepad2.rightBumperWasReleased()) robot.intake.off().schedule();
         if (gamepad2.leftBumperWasPressed()) robot.intake.shortReverse().schedule();
 
-
+        // change alliance
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
         if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
 
@@ -63,7 +64,7 @@ public class KitBotMove extends RobotOpMode {
                 Alliance.current == Alliance.RED ? new Pose(8.1, 7.5, 0) : new Pose(141.5 - 8.1, 7.5, Math.PI)
         );
 
-
+        // Reverse only heading for field centric button?
         if (gamepad2.bWasPressed()) robot.drivetrain.setPose(robot.drivetrain.getPose().withHeading(
                 Alliance.current == Alliance.RED ? 0 : Math.PI
         ));

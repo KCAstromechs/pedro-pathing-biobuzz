@@ -28,7 +28,7 @@ public class FirstAuto extends RobotOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(9, 106, 90);
+    private final Pose start = poseFactory.of(9, 106, 0);
     private final Pose path1 = poseFactory.of(106, 106, 0);
     private final Pose point2 = poseFactory.of(58, 106, 0);
 

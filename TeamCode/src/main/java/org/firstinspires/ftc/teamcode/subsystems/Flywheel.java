@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.math.TurretLocation;
 //import org.firstinspires.ftc.teamcode.math.WaveLength;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import static com.pedropathing.ivy.commands.Commands.infinite;
@@ -66,7 +67,7 @@ public class Flywheel {
      * @return
      */
     private double getVelocity() {
-        return flywheelMotorTop.getVelocity() / 6;
+        return flywheelMotorTop.getVelocity(AngleUnit.DEGREES) / 6;
     }
 
     public boolean atTarget() {

@@ -15,8 +15,8 @@ public class FlyWheelTuner extends RobotOpMode {
     public DcMotorEx flywheelMotor;
 
 
-    public static double highVel = 1000; // ticksPerSec
-    public static double lowVel = 800; // ticksPerSec
+    public static double highVel = 1000; // RPM
+    public static double lowVel = 800; // RPM
 
     public static double curTargetVel = highVel;
 
@@ -106,7 +106,7 @@ public class FlyWheelTuner extends RobotOpMode {
 
         telemetry.addData("Target Velocity", curTargetVel);
         telemetry.addData("CurrentVelocity", "%.2f", curVel);
-        telemetry.addData("Error", "$.2f", error);
+        telemetry.addData("Error", "%.2f", error);
         telemetry.addLine("------------------------------");
         telemetry.addData("Current Tuning Constant", "(A Button)", currentConstant);
         telemetry.addData("Current constant value", "%.5f (D-Pad U/D)", currentConstantVal);

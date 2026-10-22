@@ -21,7 +21,7 @@ public class FlyWheelTuner extends RobotOpMode {
     public static double curTargetVel = highVel;
 
     double kP = 0;
-    double kS = 0;
+    double kS = 0.11;
     double kV = 0;
 
     String [] pidConstantsLabels = {"kP", "kS", "kV"};
@@ -35,7 +35,7 @@ public class FlyWheelTuner extends RobotOpMode {
     @Override
     public void init() {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel");
-        flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE); // TODO confirm direction
+        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); // TODO confirm direction
 
         telemetry.addLine("Initialization Complete");
     }
@@ -61,24 +61,22 @@ public class FlyWheelTuner extends RobotOpMode {
         }
 
         if (gamepad1.dpadDownWasPressed()) {
-            switch (curConstantIndex) {
-                case (0):
-                    kP -= stepSizes[stepIndex];
-                case (1):
-                    kS -= stepSizes[stepIndex];
-                case (2):
-                    kV -= stepSizes[stepIndex];
+            if (curConstantIndex == 0) {
+                kP -= stepSizes[stepIndex];
+            } else if (curConstantIndex == 1) {
+                kS -= stepSizes[stepIndex];
+            } else if (curConstantIndex == 2) {
+                kV -= stepSizes[stepIndex];
             }
         }
 
         if (gamepad1.dpadUpWasPressed()) {
-            switch (curConstantIndex) {
-                case (0):
-                    kP += stepSizes[stepIndex];
-                case (1):
-                    kS += stepSizes[stepIndex];
-                case (2):
-                    kV += stepSizes[stepIndex];
+            if (curConstantIndex == 0) {
+                kP += stepSizes[stepIndex];
+            } else if (curConstantIndex == 1) {
+                kS += stepSizes[stepIndex];
+            } else if (curConstantIndex == 2) {
+                kV += stepSizes[stepIndex];
             }
         }
 
@@ -88,27 +86,31 @@ public class FlyWheelTuner extends RobotOpMode {
         }
         if (flywheelActive) {
             flywheelMotor.setPower(pidCalculate());
+        } else {
+            flywheelMotor.setPower(0);
         }
+
+        flywheelMotor.setPower(gamepad1.right_trigger);
 
         // TELEMETRY
         double curVel = getVelocityRPM();
         double error = curTargetVel - curVel;
         String currentConstant = pidConstantsLabels[curConstantIndex];
         double currentConstantVal = 0;
-        switch (currentConstant) {
-            case ("kP"):
-                currentConstantVal = kP;
-            case ("kS"):
-                currentConstantVal = kS;
-            case ("kV"):
-                currentConstantVal = kV;
+        if (currentConstant.equals("kP")) {
+            currentConstantVal = kP;
+        } else if (currentConstant.equals("kS")) {
+            currentConstantVal = kS;
+        } else if (currentConstant.equals("kV")) {
+            currentConstantVal = kV;
         }
 
         telemetry.addData("Target Velocity", curTargetVel);
         telemetry.addData("CurrentVelocity", "%.2f", curVel);
         telemetry.addData("Error", "%.2f", error);
+        telemetry.addData("Is flywheel active?", flywheelActive);
         telemetry.addLine("------------------------------");
-        telemetry.addData("Current Tuning Constant", "(A Button)", currentConstant);
+        telemetry.addData("Current Tuning Constant (A Button)", currentConstant);
         telemetry.addData("Current constant value", "%.5f (D-Pad U/D)", currentConstantVal);
         telemetry.addData("Step Size", "%.5f (B Button)", stepSizes[stepIndex]);
         telemetry.addLine("------------------------------");

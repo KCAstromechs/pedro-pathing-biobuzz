@@ -14,13 +14,9 @@ import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 public class FlyWheelTuner extends RobotOpMode {
     public DcMotorEx flywheelMotor;
 
-<<<<<<< Updated upstream
+
     public static double highVel = 1000; // ticksPerSec
     public static double lowVel = 800; // ticksPerSec
-=======
-    public double highVel = 1000; // ticksPerSec
-    public double lowVel = 800; // ticksPerSec
->>>>>>> Stashed changes
 
     public static double curTargetVel = highVel;
 

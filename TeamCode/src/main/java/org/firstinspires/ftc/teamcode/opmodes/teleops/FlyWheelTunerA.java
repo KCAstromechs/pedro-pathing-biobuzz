@@ -21,7 +21,7 @@ public class FlyWheelTunerA extends RobotOpMode {
 
     double kP = 0;
     double kS = 0.11;
-    double kV = 0;
+    double kV = 0.01;
 
     String [] pidConstantsLabels = {"kP", "kS", "kV"};
     double [] stepSizes = {10.0, 1.0, 0.1, 0.01, 0.001, 0.0001, 0.00001};
@@ -30,6 +30,7 @@ public class FlyWheelTunerA extends RobotOpMode {
     int curConstantIndex = 0;
 
     boolean flywheelActive = false;
+    double lastPIDCalculate = 0.0;
 
     @Override
     public void init() {
@@ -84,7 +85,8 @@ public class FlyWheelTunerA extends RobotOpMode {
             flywheelActive = !flywheelActive;
         }
         if (flywheelActive) {
-            flywheelMotor.setPower(pidCalculate());
+            lastPIDCalculate = pidCalculate();
+            flywheelMotor.setPower(lastPIDCalculate);
         } else {
             flywheelMotor.setPower(0);
         }
@@ -104,10 +106,12 @@ public class FlyWheelTunerA extends RobotOpMode {
             currentConstantVal = kV;
         }
 
+        telemetry.addLine("Velocity currently measured in TicksPerSec");
         telemetry.addData("Target Velocity", curTargetVel);
         telemetry.addData("CurrentVelocity", "%.2f", curVel);
         telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Is flywheel active?", flywheelActive);
+        telemetry.addData("Last PID calc output", lastPIDCalculate);
         telemetry.addLine("------------------------------");
         telemetry.addData("Current Tuning Constant (A Button)", currentConstant);
         telemetry.addData("Current constant value", "%.5f (D-Pad U/D)", currentConstantVal);
@@ -118,12 +122,29 @@ public class FlyWheelTunerA extends RobotOpMode {
         telemetry.addData("kV", "%.5f", kV);
     }
 
+    /**
+     * Current returns velocity in tick per second
+     * @return
+     */
     private double getVelocityRPM() {
-        return flywheelMotor.getVelocity(AngleUnit.DEGREES) / 6; // * 60sec/min / 360(degrees/rot)
+        return flywheelMotor.getVelocity(); // * 60sec/min / 360(degrees/rot)
     }
 
+    /**
+     * Returns pid calculation
+     * @return pid calculation based on `curTargetVel - getVelocityRPM()`
+     */
     private double pidCalculate() {
         return kP * (curTargetVel - getVelocityRPM()) + kV * curTargetVel + kS * Math.signum(curTargetVel);
+    }
+
+    /**
+     * Returns pid calculation
+     * @param error difference between target velocity and current velocity
+     * @return pid calculation based on `error`
+     */
+    private double pidCalculate(double error) {
+        return kP * (error) + kV * curTargetVel + kS * Math.signum(curTargetVel);
     }
 
 }

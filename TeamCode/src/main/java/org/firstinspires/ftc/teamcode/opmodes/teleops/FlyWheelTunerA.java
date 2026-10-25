@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.teleops;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -10,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
 @Config
-@TeleOp(name = "FlyWheelTuner", group = "tuning")
-public class FlyWheelTuner extends RobotOpMode {
+@TeleOp(name = "FlyWheelTunerA", group = "tuning")
+public class FlyWheelTunerA extends RobotOpMode {
     public DcMotorEx flywheelMotor;
 
 

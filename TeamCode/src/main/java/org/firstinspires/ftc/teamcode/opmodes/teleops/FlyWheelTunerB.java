@@ -16,13 +16,13 @@ import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 public class FlyWheelTunerB extends RobotOpMode {
     public DcMotorEx flywheelMotor;
 
-    public static double highVel = 1000; // RPM
-    public static double lowVel = 800; // RPM
+    public static double highVel = 1300; // RPM
+    public static double lowVel = 1250; // RPM
 
     public static double curTargetVel = highVel;
 
-    double kP = 0;
-    double kF = 0;
+    double kP = 5.65;
+    double kF = 12.55;
 
     String [] pidConstantsLabels = {"kP", "kF"};
     double [] stepSizes = {10.0, 1.0, 0.1, 0.01, 0.001, 0.0001, 0.00001};
@@ -36,7 +36,7 @@ public class FlyWheelTunerB extends RobotOpMode {
     public void init() {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); // TODO confirm direction
+        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); // TODO change direction if needed
 
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(kP, 0, 0, kF);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
@@ -50,20 +50,24 @@ public class FlyWheelTunerB extends RobotOpMode {
         // set target vel
         // update telemetry
 
+        // switch between high and low Vel
         if (gamepad1.yWasPressed()) {
             if (curTargetVel == highVel) {
                 curTargetVel = lowVel;
             } else { curTargetVel = highVel; }
         }
 
+        // Change step size
         if (gamepad1.bWasPressed()) {
             stepIndex = (stepIndex + 1) % stepSizes.length;
         }
 
+        // Change constant that is being edited
         if (gamepad1.aWasPressed()) {
             curConstantIndex = (curConstantIndex + 1) % pidConstantsLabels.length;
         }
 
+        // Change constant by step
         if (gamepad1.dpadDownWasPressed()) {
             if (curConstantIndex == 0) {
                 kP -= stepSizes[stepIndex];
@@ -78,6 +82,13 @@ public class FlyWheelTunerB extends RobotOpMode {
             } else if (curConstantIndex == 1) {
                 kF += stepSizes[stepIndex];
             }
+        }
+
+        // Manually change curTargetVel
+        if (gamepad1.dpadRightWasPressed()) {
+            curTargetVel += stepSizes[stepIndex];
+        } else if (gamepad1.dpadLeftWasPressed()) {
+            curTargetVel -= stepSizes[stepIndex];
         }
 
         // update pid after change occurs
@@ -105,7 +116,7 @@ public class FlyWheelTunerB extends RobotOpMode {
         }
 
         telemetry.addLine("Velocity in TicksPerSecond");
-        telemetry.addData("Target Velocity", curTargetVel);
+        telemetry.addData("Target Velocity", "%.5f (D-Pad R/L)", curTargetVel);
         telemetry.addData("CurrentVelocity", "%.2f", curVel);
         telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Is flywheel active?", flywheelActive);

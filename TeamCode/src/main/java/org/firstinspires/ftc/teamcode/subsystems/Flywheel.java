@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import org.firstinspires.ftc.teamcode.math.TurretLocation;
@@ -16,18 +19,17 @@ import static com.pedropathing.ivy.commands.Commands.infinite;
 public class Flywheel {
 
     public static class FlywheelParams {
-        public double kP = 0.01;
-        public double kS = 0.065;
-        public double kV = 0.000365;
+        public double kP = 5.75;
+        public double kF = 12.75;
         public int velocityTolerance = 25;
-        public double shootingVelocity = 1000; //in encoder ticks/sec
+        public double shootingVelocity = 1270; //in encoder ticks/sec
         private double targetVelocity = 0;
     }
 
     public static FlywheelParams params = new FlywheelParams();
 
     public static boolean override = false;
-    private final DcMotorEx flywheelMotorTop;
+    private final DcMotorEx flywheelMotor;
 //    private final DcMotorEx flywheelMotorBottom;
     private final Telemetry telemetry;
     private final Drivetrain drivetrain;
@@ -35,21 +37,25 @@ public class Flywheel {
     private boolean on = false;
 
     public Flywheel(Robot robot) {
-        flywheelMotorTop = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
-//        flywheelMotorBottom = robot.hardwareMap.get(DcMotorEx.class, "flywheelBottom");
-//        flywheelMotorBottom.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheelMotor = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
+        flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); // TODO confirm direction
+
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(params.kP, 0, 0, params.kF);
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         telemetry = robot.telemetry;
         drivetrain = robot.drivetrain;
+        telemetry.addLine("Initialization Complete");
     }
 
     public void setShootingVelocity(double shootingVelocity) {
-        this.params.shootingVelocity = shootingVelocity;
+        params.shootingVelocity = shootingVelocity;
         tempOverride = true;
     }
 
     public void setTargetVelocity(double targetVelocity) {
-        this.params.targetVelocity = targetVelocity;
+        params.targetVelocity = targetVelocity;
         tempOverride = true;
     }
 
@@ -57,17 +63,17 @@ public class Flywheel {
         tempOverride = false;
     }
 
-    private void setPower(double power) {
-        flywheelMotorTop.setPower(power);
-//        flywheelMotorBottom.setPower(power);
-    }
+    /**
+     * Sets desired flyWheel velocity to `params.targetVelocity`
+     */
+    public void updateVelocity() { flywheelMotor.setVelocity(params.targetVelocity); }
 
     /**
-     * Return flywheel velocity in RPM
+     * Return flywheel velocity in ticks per second
      * @return
      */
     private double getVelocity() {
-        return flywheelMotorTop.getVelocity(AngleUnit.DEGREES) / 6;
+        return flywheelMotor.getVelocity();
     }
 
     public boolean atTarget() {
@@ -90,26 +96,21 @@ public class Flywheel {
 
     public Command periodic() {
         return infinite(() -> {
-            double pidCalc = 0;
+
             if (on) {
-//                target = override ? overrideTarget : (tempOverride ? target : WaveLength.getVelocityWithInterpolation(TurretLocation.getTurretPose(drivetrain.getPose()), Alliance.current));
-                params.targetVelocity = params.shootingVelocity;
-                pidCalc = params.kP * (params.targetVelocity - getVelocity()) + params.kV * params.targetVelocity + params.kS * Math.signum(params.targetVelocity);
-                setPower(pidCalc);
+                setTargetVelocity(params.shootingVelocity);
             } else {
-                params.targetVelocity = 0;
-                setPower(0);
+                setTargetVelocity(0);
             }
+            updateVelocity();
 
             telemetry.addLine("-----Flywheel Telemetry:");
             telemetry.addData("override: ", override);
             telemetry.addData("kP: ", params.kP);
-            telemetry.addData("kS: ", params.kS);
-            telemetry.addData("kV: ", params.kV);
-            telemetry.addData("PID Calculation: ", pidCalc);
-            telemetry.addData("Flywheel Velocity (RPM)", getVelocity());
-            telemetry.addData("Flywheel Target (RPM)", params.targetVelocity);
-            telemetry.addData("Flywheel Power", flywheelMotorTop.getPower());
+            telemetry.addData("kF: ", params.kF);
+            telemetry.addData("Flywheel Velocity (ticks per sec)", getVelocity());
+            telemetry.addData("Flywheel Target (ticks per sec)", params.targetVelocity);
+            telemetry.addData("Flywheel Power", flywheelMotor.getPower());
         });
     }
 }

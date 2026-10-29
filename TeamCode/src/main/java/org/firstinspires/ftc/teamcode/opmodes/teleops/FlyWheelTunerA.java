@@ -91,7 +91,8 @@ public class FlyWheelTunerA extends RobotOpMode {
             flywheelMotor.setPower(0);
         }
 
-        flywheelMotor.setPower(gamepad1.right_trigger);
+        double force_power = gamepad1.right_trigger;
+        flywheelMotor.setPower(force_power);
 
         // TELEMETRY
         double curVel = getVelocityRPM();
@@ -112,6 +113,7 @@ public class FlyWheelTunerA extends RobotOpMode {
         telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Is flywheel active?", flywheelActive);
         telemetry.addData("Last PID calc output", lastPIDCalculate);
+        telemetry.addData("Right Trigger val (force power)", force_power);
         telemetry.addLine("------------------------------");
         telemetry.addData("Current Tuning Constant (A Button)", currentConstant);
         telemetry.addData("Current constant value", "%.5f (D-Pad U/D)", currentConstantVal);

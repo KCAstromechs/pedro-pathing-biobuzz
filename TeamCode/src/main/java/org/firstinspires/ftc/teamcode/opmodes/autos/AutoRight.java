@@ -19,30 +19,31 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Disabled
-@Autonomous(name = "AutoTemplate", group = "Autonomous")
+@Autonomous(name = "AutoRight", group = "Autonomous")
 public class AutoRight extends RobotOpMode {
 
     private Follower follower;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56.75, 8.75, 90);
-    private final Pose path1 = poseFactory.of(16.75, 12.75, 265);
-    private final Pose path1Control1 = poseFactory.of(56.75, 19.75, 0);
-    private final Pose path1Segment1Start = poseFactory.of(16.75, 12.75, 90);
-    private final Pose path1Segment1End = poseFactory.of(16.75, 12.75, 180);
-    private final Pose path1Segment2Start = poseFactory.of(16.75, 12.75, 180);
-    private final Pose path1Segment2End = poseFactory.of(16.75, 12.75, 265);
-    private final Pose point2 = poseFactory.of(8.75, 9.75, 270);
-    private final Pose point2Segment1Start = poseFactory.of(8.75, 9.75, 265);
-    private final Pose point2Segment1End = poseFactory.of(8.75, 9.75, 270);
+    private final Pose start = poseFactory.of(56.75, 8.75, 270);
+    private final Pose toGarden = poseFactory.of(8, 12.734, 270);
+    private final Pose toGardenControl1 = poseFactory.of(56.438, 16.0442, 0);
+    private final Pose eatGardenStart = poseFactory.of(8, 12.734, 270);
+    private final Pose eatGarden = poseFactory.of(8, 8.6815, 270);
+    private final Pose point3 = poseFactory.of(56.6225, 15.5785, -270);
+    private final Pose point3Segment1Start = poseFactory.of(56.6225, 15.5785, 270);
+    private final Pose point3Segment1End = poseFactory.of(56.6225, 15.5785, 270);
+    private final Pose point3Segment2Start = poseFactory.of(56.6225, 15.5785, -90);
+    private final Pose point3Segment2End = poseFactory.of(56.6225, 15.5785, 90);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
-            follow(follower, toGate()),
-            follow(follower, intakeFromGate())
+            robot.intake.on(),
+            follow(follower, toGarden()),
+            follow(follower, eatGarden()),
+            follow(follower, path3())
         );
     }
 
@@ -84,11 +85,18 @@ public class AutoRight extends RobotOpMode {
         telemetry.update();
     }
 
-    public Path toGate() {
-        return Paths.curve(start, path1Control1, path1).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(path1Segment1Start, path1Segment1End)).until(1, Interpolator.linear(path1Segment2Start, path1Segment2End)));
+    public Path toGarden() {
+        return Paths.curve(start, toGardenControl1, toGarden).linear(start, toGarden);
     }
 
-    public Path intakeFromGate() {
-        return Paths.line(path1, point2).heading(Interpolator.piecewise().until(1, Interpolator.linear(point2Segment1Start, point2Segment1End)));
+    public Path eatGarden() {
+        return Paths.line(eatGardenStart, eatGarden).linear(eatGardenStart, eatGarden)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.3)
+                );
+    }
+
+    public Path path3() {
+        return Paths.line(eatGarden, point3).heading(Interpolator.piecewise().until(0.6, Interpolator.linear(point3Segment1Start, point3Segment1End)).until(1, Interpolator.linear(point3Segment2Start, point3Segment2End)));
     }
 }

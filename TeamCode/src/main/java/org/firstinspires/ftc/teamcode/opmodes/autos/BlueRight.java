@@ -1,7 +1,6 @@
 
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static com.pedropathing.api.Paths.*;
 import static com.pedropathing.ivy.commands.Commands.*;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
@@ -19,8 +18,8 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Autonomous(name = "BlueLeft", group = "Autonomous")
-public class BlueLeft extends RobotOpMode {
+@Autonomous(name = "BlueRight", group = "Autonomous")
+public class BlueRight extends RobotOpMode {
 
     private Follower follower;
 

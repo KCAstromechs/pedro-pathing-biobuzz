@@ -13,7 +13,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+import static com.pedropathing.ivy.commands.Commands.conditional;
 import static com.pedropathing.ivy.commands.Commands.infinite;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 
 @Config
 public class Flywheel {
@@ -35,6 +38,7 @@ public class Flywheel {
     private final Drivetrain drivetrain;
     private boolean tempOverride = false;
     private boolean on = false;
+    private boolean reverse = false;
 
     public Flywheel(Robot robot) {
         flywheelMotor = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
@@ -88,10 +92,18 @@ public class Flywheel {
         on = false;
     }
 
-    public void toggle() {
-        on = !on;
-        if (on) turnOn();
-        else turnOff();
+    public void turnReverse(){reverse = true; on =false;}
+
+    public Command off() {
+        return instant(() -> turnOff()).requiring(flywheelMotor);
+    }
+
+    public Command on() {
+        return instant(() -> turnOn()).requiring(flywheelMotor);
+    }
+
+    public Command reverse() {
+        return instant(() -> turnReverse()).requiring(flywheelMotor);
     }
 
     public Command periodic() {
@@ -99,7 +111,9 @@ public class Flywheel {
 
             if (on) {
                 setTargetVelocity(params.shootingVelocity);
-            } else {
+            } else if (reverse) {
+                setTargetVelocity(-500);
+            }else {
                 setTargetVelocity(0);
             }
             updateVelocity();

@@ -35,7 +35,7 @@ public class KitBotMove extends RobotOpMode {
                 gamepad1.right_stick_x,
                 Alliance.current
         );
-
+        //gyro
         if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();
         if (gamepad1.xWasPressed()) robot.drivetrain.unResetGyro().schedule();
 
@@ -44,16 +44,17 @@ public class KitBotMove extends RobotOpMode {
         if(gamepad2.right_trigger < 0.1) robot.kicker.turnOff();
 
         //flywheel
-        if (gamepad2.left_trigger >= 0.1) robot.flywheel.turnOn();
-        if (gamepad2.left_trigger < 0.1) robot.flywheel.turnOff();
+        if (gamepad2.right_trigger >= 0.1) robot.flywheel.on().schedule();
+        if (gamepad2.left_trigger >= 0.1) robot.flywheel.reverse().schedule();
+        if (gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1) robot.flywheel.off().schedule();
 
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()
         // intake
         if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
-        if (gamepad2.rightBumperWasReleased()) robot.intake.off().schedule();
-        if (gamepad2.leftBumperWasPressed()) robot.intake.shortReverse().schedule();
+        if (gamepad2.leftBumperWasPressed()) robot.intake.reverse().schedule();
+        if (gamepad2.rightBumperWasReleased() || gamepad2.leftBumperWasReleased()) robot.intake.off().schedule();
 
         // change alliance
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;

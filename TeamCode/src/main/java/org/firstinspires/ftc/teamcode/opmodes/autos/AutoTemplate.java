@@ -52,8 +52,6 @@ public class AutoTemplate extends RobotOpMode {
     public void init() {
         super.init();
 
-        Scheduler.reset();
-
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();

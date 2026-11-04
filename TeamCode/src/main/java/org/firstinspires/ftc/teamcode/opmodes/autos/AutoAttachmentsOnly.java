@@ -23,7 +23,7 @@ public class AutoAttachmentsOnly extends RobotOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private Pose start; // TODO Add points here
+    private final Pose start = poseFactory.of(132, 118.5, 180);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -36,8 +36,6 @@ public class AutoAttachmentsOnly extends RobotOpMode {
     @Override
     public void init() {
         super.init();
-
-        Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
         follower.setPose(start);

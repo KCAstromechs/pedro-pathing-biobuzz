@@ -46,7 +46,6 @@ public class CircleAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Scheduler.reset();
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();

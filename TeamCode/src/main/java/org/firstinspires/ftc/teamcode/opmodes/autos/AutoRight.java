@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static com.pedropathing.ivy.commands.Commands.*;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
@@ -31,27 +32,32 @@ public class AutoRight extends RobotOpMode {
     private final Pose toGardenControl1 = poseFactory.of(56.438, 16.0442, 0);
     private final Pose eatGardenStart = poseFactory.of(8, 12.734, 270);
     private final Pose eatGarden = poseFactory.of(8, 8.6815, 270);
-    private final Pose point3 = poseFactory.of(56.6225, 15.5785, -270);
-    private final Pose point3Segment1Start = poseFactory.of(56.6225, 15.5785, 270);
-    private final Pose point3Segment1End = poseFactory.of(56.6225, 15.5785, 270);
-    private final Pose point3Segment2Start = poseFactory.of(56.6225, 15.5785, -90);
-    private final Pose point3Segment2End = poseFactory.of(56.6225, 15.5785, 90);
+    private final Pose point3Start = poseFactory.of(8, 8.6815, 270);
+    private final Pose point3 = poseFactory.of(56.6225, 15.5785, 270);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
             robot.intake.on(),
+            instant(() -> robot.flywheel.turnOn()),
+            waitUntil(robot.flywheel::atTarget),
+            instant(() -> robot.kicker.turnOn()),
+            waitMs(5000),
+            instant(() -> robot.kicker.turnOff()),
+            instant(() -> robot.flywheel.turnOff()),
             follow(follower, toGarden()),
             follow(follower, eatGarden()),
-            follow(follower, path3())
+            waitMs(1000),
+            follow(follower, path3()),
+            instant(() -> robot.flywheel.turnOn()),
+            waitUntil(robot.flywheel::atTarget),
+            instant(() -> robot.kicker.turnOn())
         );
     }
 
     @Override
     public void init() {
         super.init();
-
-        Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
@@ -97,6 +103,6 @@ public class AutoRight extends RobotOpMode {
     }
 
     public Path path3() {
-        return Paths.line(eatGarden, point3).heading(Interpolator.piecewise().until(0.6, Interpolator.linear(point3Segment1Start, point3Segment1End)).until(1, Interpolator.linear(point3Segment2Start, point3Segment2End)));
+        return Paths.line(point3Start, point3).linear(point3Start, point3);
     }
 }

@@ -59,8 +59,6 @@ public class BlueRight extends RobotOpMode {
     public void init() {
         super.init();
 
-        Scheduler.reset();
-
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();

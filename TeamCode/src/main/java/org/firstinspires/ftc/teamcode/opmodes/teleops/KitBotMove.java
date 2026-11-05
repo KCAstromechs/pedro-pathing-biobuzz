@@ -49,18 +49,9 @@ public class KitBotMove extends RobotOpMode {
 
         // Tractor Beam.aimTurret()
         // intake
-        if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
-        if (gamepad2.leftBumperWasPressed()) robot.intake.reverse().schedule();
-        //on bumper release
-        if (gamepad2.leftBumperWasReleased() || gamepad2.rightBumperWasReleased()) {
-            if (gamepad2.left_bumper) {
-                robot.intake.reverse().schedule();
-            } else if (gamepad2.right_bumper) {
-                robot.intake.on().schedule();
-            } else {
-                robot.intake.off().schedule();
-            }
-        }
+        if (robot.intake.isOff() && gamepad2.right_bumper) robot.intake.on().schedule();
+        if (robot.intake.isOff() && gamepad2.left_bumper) robot.intake.reverse().schedule();
+        if (robot.intake.isOn() && (!gamepad2.right_bumper && !gamepad2.left_bumper)) ShootCommands.stopShoot(robot).schedule();
 
         // change alliance
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;

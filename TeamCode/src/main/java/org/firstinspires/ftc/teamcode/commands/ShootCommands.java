@@ -1,0 +1,33 @@
+package org.firstinspires.ftc.teamcode.commands;
+
+import com.pedropathing.ivy.Command;
+import org.firstinspires.ftc.teamcode.robot.Robot;
+
+import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.groups.Groups.*;
+
+public class ShootCommands {
+
+    public static Command startShoot(Robot robot) {
+        return sequential(
+                instant(robot.flywheel::turnOn),
+                waitUntil(robot.flywheel::atTarget),
+                instant(robot.kicker::turnOn)
+        );
+    }
+
+    public static Command stopShoot(Robot robot) {
+        return sequential(
+                instant(robot.flywheel::turnOff),
+                instant(robot.kicker::turnOff)
+        );
+    }
+
+    public static Command reverseShoot(Robot robot) {
+        return sequential(
+                instant(robot.flywheel::reverse),
+                instant(robot.kicker::reverse)
+        );
+    }
+
+}

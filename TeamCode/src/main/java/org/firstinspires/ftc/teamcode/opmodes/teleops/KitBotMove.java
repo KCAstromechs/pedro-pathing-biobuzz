@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.ShootCommands;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
@@ -39,14 +40,10 @@ public class KitBotMove extends RobotOpMode {
         if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();
         if (gamepad1.xWasPressed()) robot.drivetrain.unResetGyro().schedule();
 
-        //kicker
-        if(gamepad2.right_trigger >= 0.1) robot.kicker.turnOn();
-        if(gamepad2.right_trigger < 0.1) robot.kicker.turnOff();
-
-        //flywheel
-        if (gamepad2.right_trigger >= 0.1) robot.flywheel.on().schedule();
-        if (gamepad2.left_trigger >= 0.1) robot.flywheel.reverse().schedule();
-        if (gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1) robot.flywheel.off().schedule();
+        //shoot
+        if (robot.flywheel.isOff() && gamepad2.right_trigger >= 0.1) ShootCommands.startShoot(robot).schedule();
+        if (robot.flywheel.isOff() && gamepad2.left_trigger >= 0.1) ShootCommands.reverseShoot(robot).schedule();
+        if (robot.flywheel.isOn() && gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1) ShootCommands.stopShoot(robot).schedule();
 
         // Pose turretPose = ...
 
@@ -54,7 +51,16 @@ public class KitBotMove extends RobotOpMode {
         // intake
         if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
         if (gamepad2.leftBumperWasPressed()) robot.intake.reverse().schedule();
-        if (gamepad2.rightBumperWasReleased() || gamepad2.leftBumperWasReleased()) robot.intake.off().schedule();
+        //on bumper release
+        if (gamepad2.leftBumperWasReleased() || gamepad2.rightBumperWasReleased()) {
+            if (gamepad2.left_bumper) {
+                robot.intake.reverse().schedule();
+            } else if (gamepad2.right_bumper) {
+                robot.intake.on().schedule();
+            } else {
+                robot.intake.off().schedule();
+            }
+        }
 
         // change alliance
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;

@@ -78,6 +78,14 @@ public class Kicker {
         slowMode = false;
     }
 
+    public boolean isOn() {
+        return (mode == Mode.ON);
+    }
+
+    public boolean isOff() {
+        return (mode == Mode.OFF);
+    }
+
     public Command periodic() {
         return infinite(() -> {
             switch (mode) {

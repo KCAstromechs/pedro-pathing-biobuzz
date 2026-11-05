@@ -106,6 +106,18 @@ public class Flywheel {
         return instant(() -> turnReverse()).requiring(flywheelMotor);
     }
 
+    public boolean isOn() {
+        return on;
+    }
+
+    public boolean isOff() {
+        return !on && !reverse;
+    }
+
+    public boolean isReverse() {
+        return reverse;
+    }
+
     public Command periodic() {
         return infinite(() -> {
 

@@ -16,6 +16,7 @@ import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.commands.ShootCommands;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
@@ -39,19 +40,18 @@ public class AutoRight extends RobotOpMode {
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
             robot.intake.on(),
-            instant(() -> robot.flywheel.turnOn()),
-            waitUntil(robot.flywheel::atTarget),
-            instant(() -> robot.kicker.turnOn()),
+            ShootCommands.startShoot(robot),
             waitMs(5000),
+            ShootCommands.stopShoot(robot),
             instant(() -> robot.kicker.turnOff()),
             instant(() -> robot.flywheel.turnOff()),
             follow(follower, toGarden()),
             follow(follower, eatGarden()),
-            waitMs(1000),
+            waitMs(2000),
             follow(follower, path3()),
-            instant(() -> robot.flywheel.turnOn()),
-            waitUntil(robot.flywheel::atTarget),
-            instant(() -> robot.kicker.turnOn())
+                ShootCommands.startShoot(robot),
+                waitMs(5000),
+                ShootCommands.stopShoot(robot)
         );
     }
 

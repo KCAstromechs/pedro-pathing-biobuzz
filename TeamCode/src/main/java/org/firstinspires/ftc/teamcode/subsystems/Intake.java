@@ -67,6 +67,8 @@ public class Intake {
         slowMode = false;
     }
 
+
+
     public Command periodic() {
         return infinite(() -> {
             switch (mode) {

@@ -49,9 +49,9 @@ public class AutoRight extends RobotOpMode {
             follow(follower, eatGarden()),
             waitMs(2000),
             follow(follower, path3()),
-                ShootCommands.startShoot(robot),
-                waitMs(5000),
-                ShootCommands.stopShoot(robot)
+            ShootCommands.startShoot(robot),
+            waitMs(5000),
+            ShootCommands.stopShoot(robot)
         );
     }
 

@@ -24,7 +24,7 @@ public class Flywheel {
     public static class FlywheelParams {
         public double kP = 5.75;
         public double kF = 12.75;
-        public int velocityTolerance = 25;
+        public int velocityTolerance = 40; //in encoder ticks/sec
         public double shootingVelocity = 1270; //in encoder ticks/sec
         private double targetVelocity = 0;
     }
@@ -80,8 +80,12 @@ public class Flywheel {
         return flywheelMotor.getVelocity();
     }
 
+    /**
+     * Return whether flywheel is at shooting velocity with `params.velocityTolerance`
+     * @return
+     */
     public boolean atTarget() {
-        return Math.abs(params.targetVelocity - getVelocity()) <= params.velocityTolerance;
+        return Math.abs(params.targetVelocity - getVelocity()) <= params.velocityTolerance && params.targetVelocity== params.shootingVelocity;
     }
 
     public void turnOn() {
@@ -90,6 +94,7 @@ public class Flywheel {
 
     public void turnOff() {
         on = false;
+        reverse = false;
     }
 
     public void turnReverse(){reverse = true; on =false;}

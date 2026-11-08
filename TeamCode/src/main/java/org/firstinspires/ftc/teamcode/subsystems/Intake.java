@@ -68,7 +68,7 @@ public class Intake {
     }
 
     public boolean isOn() {
-        return (mode == Intake.Mode.ON);
+        return (mode == Intake.Mode.ON || mode == Mode.REVERSE);
     }
 
     public boolean isOff() {

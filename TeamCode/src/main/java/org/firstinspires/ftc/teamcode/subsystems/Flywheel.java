@@ -22,10 +22,10 @@ import static com.pedropathing.ivy.commands.Commands.waitMs;
 public class Flywheel {
 
     public static class FlywheelParams {
-        public double kP = 5.75;
-        public double kF = 12.75;
-        public int velocityTolerance = 40; //in encoder ticks/sec
-        public double shootingVelocity = 1270; //in encoder ticks/sec
+        public double kP = 6;
+        public double kF = 13;
+        public int velocityTolerance = 30; //in encoder ticks/sec
+        public double shootingVelocity = 1300; //in encoder ticks/sec
         private double targetVelocity = 0;
     }
 
@@ -142,6 +142,7 @@ public class Flywheel {
             telemetry.addData("Flywheel Velocity (ticks per sec)", getVelocity());
             telemetry.addData("Flywheel Target (ticks per sec)", params.targetVelocity);
             telemetry.addData("Flywheel Power", flywheelMotor.getPower());
+            telemetry.addData("isReverse", reverse);
         });
     }
 }

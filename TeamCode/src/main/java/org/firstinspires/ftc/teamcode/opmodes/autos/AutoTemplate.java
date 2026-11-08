@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Disabled
+@Disabled // TODO REMOVE this annotation for actual autos
 @Autonomous(name = "AutoTemplate", group = "Autonomous")
 public class AutoTemplate extends RobotOpMode {
 

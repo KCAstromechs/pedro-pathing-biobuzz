@@ -11,6 +11,9 @@ import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 @TeleOp(name = "KitBotMove", group = "testing")
 @Config
 public class KitBotMove extends RobotOpMode {
+
+    private boolean tryingReverse = false;
+
     @Override
     public void init() {
         super.init();
@@ -41,17 +44,20 @@ public class KitBotMove extends RobotOpMode {
         if (gamepad1.xWasPressed()) robot.drivetrain.unResetGyro().schedule();
 
         //shoot
-        if (robot.flywheel.isOff() && gamepad2.right_trigger >= 0.1) ShootCommands.startShoot(robot).schedule();
-        if (robot.flywheel.isOff() && gamepad2.left_trigger >= 0.1) ShootCommands.reverseShoot(robot).schedule();
-        if (robot.flywheel.isOn() && gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1) ShootCommands.stopShoot(robot).schedule();
+        if (robot.flywheel.isOff() && gamepad2.right_bumper) ShootCommands.startShoot(robot).schedule();
+        if (robot.flywheel.isOff() && gamepad2.left_bumper) {
+            tryingReverse = true;
+            ShootCommands.reverseShoot(robot).schedule();
+        }
+        if (robot.flywheel.isOn() && !gamepad2.right_bumper && !gamepad2.left_bumper) { tryingReverse = false; ShootCommands.stopShoot(robot).schedule();}
 
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()
         // intake
-        if (robot.intake.isOff() && gamepad2.right_bumper) robot.intake.on().schedule();
-        if (robot.intake.isOff() && gamepad2.left_bumper) robot.intake.reverse().schedule();
-        if (robot.intake.isOn() && (!gamepad2.right_bumper && !gamepad2.left_bumper)) ShootCommands.stopShoot(robot).schedule();
+        if (robot.intake.isOff() && gamepad2.right_trigger >= 0.1) robot.intake.on().schedule();
+        if (robot.intake.isOff() && gamepad2.left_trigger >= 0.1) robot.intake.reverse().schedule();
+        if (robot.intake.isOn() && (gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1)) robot.intake.off().schedule();
 
         // change alliance
         if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
@@ -68,6 +74,7 @@ public class KitBotMove extends RobotOpMode {
         ));
 
         robot.telemetry.addData("Alliance", Alliance.current);
+        robot.telemetry.addData("Trying to reverse", tryingReverse);
 
         super.loop();
     }

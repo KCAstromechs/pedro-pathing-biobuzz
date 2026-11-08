@@ -92,7 +92,10 @@ public class AutoRight extends RobotOpMode {
     }
 
     public Path toGarden() {
-        return Paths.curve(start, toGardenControl1, toGarden).linear(start, toGarden);
+        return Paths.curve(start, toGardenControl1, toGarden).linear(start, toGarden)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.8)
+                );
     }
 
     public Path eatGarden() {
@@ -103,6 +106,9 @@ public class AutoRight extends RobotOpMode {
     }
 
     public Path path3() {
-        return Paths.line(point3Start, point3).linear(point3Start, point3);
+        return Paths.line(point3Start, point3).linear(point3Start, point3)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.8)
+                );
     }
 }

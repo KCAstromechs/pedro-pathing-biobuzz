@@ -25,8 +25,8 @@ public class ShootCommands {
 
     public static Command reverseShoot(Robot robot) {
         return sequential(
-                instant(robot.flywheel::reverse),
-                instant(robot.kicker::reverse)
+                instant(robot.flywheel::turnReverse),
+                instant(robot.kicker::turnReverse)
         );
     }
 

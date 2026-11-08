@@ -45,11 +45,8 @@ public class KitBotMove extends RobotOpMode {
 
         //shoot
         if (robot.flywheel.isOff() && gamepad2.right_bumper) ShootCommands.startShoot(robot).schedule();
-        if (robot.flywheel.isOff() && gamepad2.left_bumper) {
-            tryingReverse = true;
-            ShootCommands.reverseShoot(robot).schedule();
-        }
-        if (robot.flywheel.isOn() && !gamepad2.right_bumper && !gamepad2.left_bumper) { tryingReverse = false; ShootCommands.stopShoot(robot).schedule();}
+        if (robot.flywheel.isOff() && gamepad2.left_bumper) ShootCommands.reverseShoot(robot).schedule();
+        if ((robot.flywheel.isOn() || robot.flywheel.isReverse()) && !gamepad2.right_bumper && !gamepad2.left_bumper) ShootCommands.stopShoot(robot).schedule();
 
         // Pose turretPose = ...
 

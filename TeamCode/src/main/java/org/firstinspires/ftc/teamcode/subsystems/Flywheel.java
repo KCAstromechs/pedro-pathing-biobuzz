@@ -26,6 +26,7 @@ public class Flywheel {
         public double kF = 13;
         public int velocityTolerance = 30; //in encoder ticks/sec
         public double shootingVelocity = 1300; //in encoder ticks/sec
+        public double idleVelocity = 500;
         private double targetVelocity = 0;
     }
 
@@ -131,7 +132,7 @@ public class Flywheel {
             } else if (reverse) {
                 setTargetVelocity(-500);
             }else {
-                setTargetVelocity(0);
+                setTargetVelocity(params.idleVelocity);
             }
             updateVelocity();
 
@@ -142,7 +143,6 @@ public class Flywheel {
             telemetry.addData("Flywheel Velocity (ticks per sec)", getVelocity());
             telemetry.addData("Flywheel Target (ticks per sec)", params.targetVelocity);
             telemetry.addData("Flywheel Power", flywheelMotor.getPower());
-            telemetry.addData("isReverse", reverse);
         });
     }
 }

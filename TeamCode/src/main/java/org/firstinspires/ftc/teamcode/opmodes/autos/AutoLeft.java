@@ -14,11 +14,12 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.commands.ShootCommands;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Autonomous(name = "AutoTemplate", group = "Autonomous")
+@Autonomous(name = "AutoLeft", group = "Autonomous")
 public class AutoLeft extends RobotOpMode {
 
     private Follower follower;
@@ -35,7 +36,14 @@ public class AutoLeft extends RobotOpMode {
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
+            robot.intake.on(),
+            ShootCommands.startShoot(robot),
+            waitMs(5000),
+            ShootCommands.stopShoot(robot),
             follow(follower, toFlower()),
+            ShootCommands.startShoot(robot),
+            waitMs(5000),
+            ShootCommands.stopShoot(robot),
             follow(follower, toPark())
         );
     }
@@ -77,10 +85,16 @@ public class AutoLeft extends RobotOpMode {
     }
 
     public Path toFlower() {
-        return Paths.curve(start, toFlowerControl1, toFlower).linear(start, toFlower);
+        return Paths.curve(start, toFlowerControl1, toFlower).linear(start, toFlower)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(0.8)
+                );
     }
 
     public Path toPark() {
-        return Paths.curve(toParkStart, toParkControl1, toPark).linear(toParkStart, toPark);
+        return Paths.curve(toParkStart, toParkControl1, toPark).linear(toParkStart, toPark)
+                .with(
+                        Constants.foresightConfig.maxPathSpeed.at(1.0)
+                );
     }
 }

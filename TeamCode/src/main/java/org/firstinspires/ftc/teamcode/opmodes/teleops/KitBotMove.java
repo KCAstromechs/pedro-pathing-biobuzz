@@ -57,8 +57,8 @@ public class KitBotMove extends RobotOpMode {
         if (robot.intake.isOn() && (gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1)) robot.intake.off().schedule();
 
         // change alliance
-        if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
-        if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
+//        if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
+//        if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
 
         // Reverse side for field centric button?
         if (gamepad2.xWasPressed()) robot.drivetrain.setPose(

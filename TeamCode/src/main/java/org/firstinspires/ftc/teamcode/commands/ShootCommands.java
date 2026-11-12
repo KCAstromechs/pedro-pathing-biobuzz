@@ -11,9 +11,15 @@ public class ShootCommands {
     public static Command startShoot(Robot robot) {
         return sequential(
                 instant(robot.flywheel::turnOn),
-                waitUntil(robot.flywheel::atTarget),
-                instant(robot.kicker::turnOn)
-        );
+                loop(
+                    sequential(
+                        waitUntil(robot.flywheel::atTarget),
+                        instant(robot.kicker::turnOn),
+                        waitUntil(() -> !robot.flywheel.atTarget()),
+                        instant(robot.kicker::turnOff)
+                    )
+                ).until(robot.flywheel::isOff) // I think this is interruptable by scheduling the stopShoot command
+        );                                     // or by putting this command in a race composition
     }
 
     public static Command stopShoot(Robot robot) {

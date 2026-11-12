@@ -28,7 +28,7 @@ public class AprilTagWebcam {
 
     private List<AprilTagDetection> detectedTags = new ArrayList<>();
 
-    private String targetClusterName = "RED AUDIENCE";
+    private String targetClusterName = "RED AUDIENCE"; // TODO make this update either based on button or pos (probably button)
 
     private Telemetry telemetry;
 

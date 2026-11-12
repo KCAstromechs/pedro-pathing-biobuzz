@@ -40,6 +40,7 @@ public class Flywheel {
     private boolean tempOverride = false;
     private boolean on = false;
     private boolean reverse = false;
+    private boolean fullOff = true;
 
     public Flywheel(Robot robot) {
         flywheelMotor = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
@@ -91,6 +92,7 @@ public class Flywheel {
 
     public void turnOn() {
         on = true;
+        fullOff = false;
     }
 
     public void turnOff() {
@@ -98,7 +100,15 @@ public class Flywheel {
         reverse = false;
     }
 
-    public void turnReverse(){reverse = true; on =false;}
+    public void turnReverse() {
+        reverse = true;
+        on = false;
+        fullOff = false;
+    }
+
+    public void enableFullOff() {
+        fullOff = true;
+    }
 
     public Command off() {
         return instant(() -> turnOff()).requiring(flywheelMotor);
@@ -131,9 +141,11 @@ public class Flywheel {
                 setTargetVelocity(params.shootingVelocity);
             } else if (reverse) {
                 setTargetVelocity(-500);
-            }else {
+            } else {
                 setTargetVelocity(params.idleVelocity);
             }
+
+            if (fullOff) setTargetVelocity(0.0);
             updateVelocity();
 
             telemetry.addLine("-----Flywheel Telemetry:");

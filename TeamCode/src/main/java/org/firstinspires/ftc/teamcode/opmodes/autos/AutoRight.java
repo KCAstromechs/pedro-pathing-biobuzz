@@ -28,30 +28,31 @@ public class AutoRight extends RobotOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56.75, 8.75, 270);
+    private final Pose start = poseFactory.of(58.9118, 8.75, 270);
     private final Pose toGarden = poseFactory.of(8, 12.734, 270);
-    private final Pose toGardenControl1 = poseFactory.of(56.438, 16.0442, 0);
+    private final Pose toGardenControl1 = poseFactory.of(56.438, 16.0442, 270);
     private final Pose eatGardenStart = poseFactory.of(8, 12.734, 270);
     private final Pose eatGarden = poseFactory.of(8, 8.6815, 270);
-    private final Pose point3Start = poseFactory.of(8, 8.6815, 270);
-    private final Pose point3 = poseFactory.of(56.6225, 15.5785, 270);
+    private final Pose toShootPosStart = poseFactory.of(8, 8.6815, 270);
+    private final Pose toShootPos = poseFactory.of(56.6225, 15.5785, 270);
+    private final Pose parkStart = poseFactory.of(56.6225, 15.5785, 270);
+    private final Pose park = poseFactory.of(14.8372, 89.8256, 270);
+    private final Pose parkControl1 = poseFactory.of(17.1112, 47.6686, 270);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
             robot.intake.on(),
-            ShootCommands.startShoot(robot),
-            waitMs(5000),
+            ShootCommands.startShoot(robot).raceWith(waitMs(8000)),
             ShootCommands.stopShoot(robot),
             instant(() -> robot.kicker.turnOff()),
             instant(() -> robot.flywheel.turnOff()),
-            follow(follower, toGarden()),
-            follow(follower, eatGarden()),
-            waitMs(2000),
-            follow(follower, path3()),
-            ShootCommands.startShoot(robot),
-            waitMs(5000),
-            ShootCommands.stopShoot(robot)
+            follow(follower, toGarden()).raceWith(waitMs(3000)),
+            follow(follower, eatGarden()).raceWith(waitMs(3000)),
+            follow(follower, toShootPos()),
+            ShootCommands.startShoot(robot).raceWith(waitMs(5000)),
+            ShootCommands.stopShoot(robot),
+            follow(follower, park())
         );
     }
 
@@ -105,10 +106,14 @@ public class AutoRight extends RobotOpMode {
                 );
     }
 
-    public Path path3() {
-        return Paths.line(point3Start, point3).linear(point3Start, point3)
+    public Path toShootPos() {
+        return Paths.line(toShootPosStart, toShootPos).linear(toShootPosStart, toShootPos)
                 .with(
                         Constants.foresightConfig.maxPathSpeed.at(0.8)
                 );
+    }
+
+    public Path park() {
+        return Paths.curve(parkStart, parkControl1, park).linear(parkStart, park);
     }
 }

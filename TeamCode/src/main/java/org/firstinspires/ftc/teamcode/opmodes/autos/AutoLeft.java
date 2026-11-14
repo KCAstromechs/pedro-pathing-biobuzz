@@ -36,13 +36,12 @@ public class AutoLeft extends RobotOpMode {
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
+            waitMs(1500),
             robot.intake.on(),
-            ShootCommands.startShoot(robot),
-            waitMs(5000),
+            ShootCommands.startShoot(robot).raceWith(waitMs(8000)),
             ShootCommands.stopShoot(robot),
             follow(follower, toFlower()),
-            ShootCommands.startShoot(robot),
-            waitMs(5000),
+            ShootCommands.startShoot(robot).raceWith(waitMs(2000)),
             ShootCommands.stopShoot(robot),
             follow(follower, toPark())
         );

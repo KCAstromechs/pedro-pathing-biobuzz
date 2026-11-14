@@ -4,12 +4,16 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.ShootCommands;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
 @TeleOp(name = "KitBotMove", group = "testing")
 @Config
 public class KitBotMove extends RobotOpMode {
+
+    private boolean tryingReverse = false;
+
     @Override
     public void init() {
         super.init();
@@ -35,29 +39,26 @@ public class KitBotMove extends RobotOpMode {
                 gamepad1.right_stick_x,
                 Alliance.current
         );
-
+        //gyro
         if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();
         if (gamepad1.xWasPressed()) robot.drivetrain.unResetGyro().schedule();
 
-        //kicker
-        if(gamepad2.right_trigger >= 0.1) robot.kicker.turnOn();
-        if(gamepad2.right_trigger < 0.1) robot.kicker.turnOff();
-
-        //flywheel
-        if (gamepad2.left_trigger >= 0.1) robot.flywheel.turnOn();
-        if (gamepad2.left_trigger < 0.1) robot.flywheel.turnOff();
+        //shoot
+        if (robot.flywheel.isOff() && gamepad2.right_bumper) ShootCommands.startShoot(robot).schedule();
+        if (robot.flywheel.isOff() && gamepad2.left_bumper) ShootCommands.reverseShoot(robot).schedule();
+        if ((robot.flywheel.isOn() || robot.flywheel.isReverse()) && !gamepad2.right_bumper && !gamepad2.left_bumper) ShootCommands.stopShoot(robot).schedule();
 
         // Pose turretPose = ...
 
         // Tractor Beam.aimTurret()
         // intake
-        if (gamepad2.rightBumperWasPressed()) robot.intake.on().schedule();
-        if (gamepad2.rightBumperWasReleased()) robot.intake.off().schedule();
-        if (gamepad2.leftBumperWasPressed()) robot.intake.shortReverse().schedule();
+        if (robot.intake.isOff() && gamepad2.right_trigger >= 0.1) robot.intake.on().schedule();
+        if (robot.intake.isOff() && gamepad2.left_trigger >= 0.1) robot.intake.reverse().schedule();
+        if (robot.intake.isOn() && (gamepad2.right_trigger < 0.1 && gamepad2.left_trigger < 0.1)) robot.intake.off().schedule();
 
         // change alliance
-        if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
-        if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
+//        if (gamepad2.leftBumperWasPressed()) Alliance.current = Alliance.RED;
+//        if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
 
         // Reverse side for field centric button?
         if (gamepad2.xWasPressed()) robot.drivetrain.setPose(
@@ -70,6 +71,7 @@ public class KitBotMove extends RobotOpMode {
         ));
 
         robot.telemetry.addData("Alliance", Alliance.current);
+        robot.telemetry.addData("Trying to reverse", tryingReverse);
 
         super.loop();
     }

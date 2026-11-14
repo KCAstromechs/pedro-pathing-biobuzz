@@ -40,8 +40,20 @@ public class Kicker {
         mode = Mode.OFF;
     }
 
-    public void reverse() {
+    public void turnReverse() {
         mode = Mode.REVERSE;
+    }
+
+    public Command off() {
+        return instant(() -> turnOff()).requiring(kickerServo);
+    }
+
+    public Command on() {
+        return instant(() -> turnOn()).requiring(kickerServo);
+    }
+
+    public Command reverse() {
+        return instant(() -> turnReverse()).requiring(kickerServo);
     }
 
     public Command shortReverse() {
@@ -64,6 +76,14 @@ public class Kicker {
 
     public void speedUp() {
         slowMode = false;
+    }
+
+    public boolean isOn() {
+        return (mode == Mode.ON);
+    }
+
+    public boolean isOff() {
+        return (mode == Mode.OFF);
     }
 
     public Command periodic() {

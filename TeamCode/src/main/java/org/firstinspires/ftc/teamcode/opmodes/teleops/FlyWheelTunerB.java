@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleops;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
 @Config
 @TeleOp(name = "FlyWheelTunerB (from Brogan)", group = "tuning")
-public class FlyWheelTunerB extends RobotOpMode {
+public class FlyWheelTunerB extends OpMode {
     public DcMotorEx flywheelMotor;
 
     public static double highVel = 1300; // RPM

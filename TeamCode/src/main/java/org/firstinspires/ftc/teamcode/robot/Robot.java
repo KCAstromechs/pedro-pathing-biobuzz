@@ -15,6 +15,7 @@ public class Robot {
     public final Intake intake;
     public final Flywheel flywheel;
     public final Kicker kicker;
+//    public final AprilTagWebcam aprilTagWebcam;
 
     public Robot(OpMode opMode) {
         hardwareMap = opMode.hardwareMap;
@@ -28,5 +29,6 @@ public class Robot {
         intake = new Intake(this);
         flywheel = new Flywheel(this);
         kicker = new Kicker(this);
+//        aprilTagWebcam = new AprilTagWebcam(this);
     }
 }

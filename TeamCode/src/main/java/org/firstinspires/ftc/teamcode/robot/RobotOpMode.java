@@ -12,20 +12,26 @@ public abstract class RobotOpMode extends OpMode {
     public void init() {
         Scheduler.reset();
         robot = new Robot(this);
+        robot.flywheel.enableFullOff();
 
+        // Only schedule the non-moving subsystems during init
         schedule(
                 robot.drivetrain.periodic(),
-                robot.flywheel.periodic(),
 //                robot.turret.periodic(),
 //                robot.tapeSensor.periodic(),
+                robot.flywheel.periodic(),
                 robot.intake.periodic(),
                 robot.kicker.periodic()
+//                robot.aprilTagWebcam.periodic()
         );
     }
 
     @Override
     public void init_loop() {
         Scheduler.execute();
+        if (robot.telemetry != null) {
+            robot.telemetry.update();
+        }
     }
 
     @Override

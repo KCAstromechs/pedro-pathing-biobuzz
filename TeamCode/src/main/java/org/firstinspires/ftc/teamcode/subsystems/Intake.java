@@ -67,6 +67,14 @@ public class Intake {
         slowMode = false;
     }
 
+    public boolean isOn() {
+        return (mode == Intake.Mode.ON || mode == Mode.REVERSE);
+    }
+
+    public boolean isOff() {
+        return (mode == Intake.Mode.OFF);
+    }
+
     public Command periodic() {
         return infinite(() -> {
             switch (mode) {

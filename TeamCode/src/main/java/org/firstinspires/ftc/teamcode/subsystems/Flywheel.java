@@ -13,16 +13,20 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+import static com.pedropathing.ivy.commands.Commands.conditional;
 import static com.pedropathing.ivy.commands.Commands.infinite;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 
 @Config
 public class Flywheel {
 
     public static class FlywheelParams {
-        public double kP = 5.75;
-        public double kF = 12.75;
-        public int velocityTolerance = 25;
-        public double shootingVelocity = 1270; //in encoder ticks/sec
+        public double kP = 6;
+        public double kF = 13;
+        public int velocityTolerance = 30; //in encoder ticks/sec
+        public double shootingVelocity = 1300; //in encoder ticks/sec
+        public double idleVelocity = 500;
         private double targetVelocity = 0;
     }
 
@@ -35,6 +39,8 @@ public class Flywheel {
     private final Drivetrain drivetrain;
     private boolean tempOverride = false;
     private boolean on = false;
+    private boolean reverse = false;
+    private boolean fullOff = true;
 
     public Flywheel(Robot robot) {
         flywheelMotor = robot.hardwareMap.get(DcMotorEx.class, "flywheel");
@@ -76,22 +82,56 @@ public class Flywheel {
         return flywheelMotor.getVelocity();
     }
 
+    /**
+     * Return whether flywheel is at shooting velocity with `params.velocityTolerance`
+     * @return
+     */
     public boolean atTarget() {
-        return Math.abs(params.targetVelocity - getVelocity()) <= params.velocityTolerance;
+        return Math.abs(params.targetVelocity - getVelocity()) <= params.velocityTolerance && params.targetVelocity== params.shootingVelocity;
     }
 
     public void turnOn() {
         on = true;
+        fullOff = false;
     }
 
     public void turnOff() {
         on = false;
+        reverse = false;
     }
 
-    public void toggle() {
-        on = !on;
-        if (on) turnOn();
-        else turnOff();
+    public void turnReverse() {
+        reverse = true;
+        on = false;
+        fullOff = false;
+    }
+
+    public void enableFullOff() {
+        fullOff = true;
+    }
+
+    public Command off() {
+        return instant(() -> turnOff()).requiring(flywheelMotor);
+    }
+
+    public Command on() {
+        return instant(() -> turnOn()).requiring(flywheelMotor);
+    }
+
+    public Command reverse() {
+        return instant(() -> turnReverse()).requiring(flywheelMotor);
+    }
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public boolean isOff() {
+        return !on && !reverse;
+    }
+
+    public boolean isReverse() {
+        return reverse;
     }
 
     public Command periodic() {
@@ -99,9 +139,13 @@ public class Flywheel {
 
             if (on) {
                 setTargetVelocity(params.shootingVelocity);
+            } else if (reverse) {
+                setTargetVelocity(-500);
             } else {
-                setTargetVelocity(0);
+                setTargetVelocity(params.idleVelocity);
             }
+
+            if (fullOff) setTargetVelocity(0.0);
             updateVelocity();
 
             telemetry.addLine("-----Flywheel Telemetry:");

@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Autonomous(name = "AutoLeftJustPark", group = "Autonomous")
+@Autonomous(name = "AutoLeftJustPark", group = "Autonomous", preselectTeleOp = "KitBotMove")
 public class AutoLeftJustPark extends RobotOpMode {
 
     private Follower follower;

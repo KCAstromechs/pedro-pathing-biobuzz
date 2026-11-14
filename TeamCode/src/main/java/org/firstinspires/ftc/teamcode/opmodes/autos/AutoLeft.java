@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.groups.Groups.parallel;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Autonomous(name = "AutoLeft", group = "Autonomous")
+@Autonomous(name = "AutoLeft", group = "Autonomous", preselectTeleOp = "KitBotMove")
 public class AutoLeft extends RobotOpMode {
 
     private Follower follower;
@@ -33,9 +34,15 @@ public class AutoLeft extends RobotOpMode {
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
-            waitMs(1700),
+            waitMs(17000),
             robot.intake.on(),
-            ShootCommands.startShoot(robot).raceWith(waitMs(8000)),
+            parallel(
+                ShootCommands.startShoot(robot),
+                sequential(
+                    waitMs(5000),
+                    robot.kicker.on() // force shoot for the last three seconds
+                )
+            ).raceWith(waitMs(8000)),
             ShootCommands.stopShoot(robot),
             follow(follower, toPark())
         );

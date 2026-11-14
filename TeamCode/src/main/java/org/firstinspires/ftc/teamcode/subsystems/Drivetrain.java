@@ -89,8 +89,10 @@ public class Drivetrain {
 
     /**
      * Resets the heading offset back to 0 (aligned with true field zero).
+     * And do complete gyro reset
      */
     public void clearHeadingOffset() {
+        follower.setPose(new Pose(follower.pose().x(), follower.pose().y(), 0.0));
         this.headingOffset = 0.0;
     }
 

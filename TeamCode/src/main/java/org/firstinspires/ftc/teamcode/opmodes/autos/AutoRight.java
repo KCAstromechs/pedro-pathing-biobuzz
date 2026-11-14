@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.groups.Groups.parallel;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
 
-@Autonomous(name = "AutoRight", group = "Autonomous")
+@Autonomous(name = "AutoRight", group = "Autonomous", preselectTeleOp = "KitBotMove")
 public class AutoRight extends RobotOpMode {
 
     private Follower follower;
@@ -43,14 +44,26 @@ public class AutoRight extends RobotOpMode {
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
             robot.intake.on(),
-            ShootCommands.startShoot(robot).raceWith(waitMs(8000)),
+            parallel(
+                    ShootCommands.startShoot(robot),
+                    sequential(
+                            waitMs(5000),
+                            robot.kicker.on() // force shoot for the last three seconds
+                    )
+            ).raceWith(waitMs(8000)),
             ShootCommands.stopShoot(robot),
             instant(() -> robot.kicker.turnOff()),
             instant(() -> robot.flywheel.turnOff()),
             follow(follower, toGarden()).raceWith(waitMs(3000)),
             follow(follower, eatGarden()).raceWith(waitMs(3000)),
             follow(follower, toShootPos()),
-            ShootCommands.startShoot(robot).raceWith(waitMs(5000)),
+            parallel(
+                    ShootCommands.startShoot(robot),
+                    sequential(
+                            waitMs(5000),
+                            robot.kicker.on() // force shoot for the last three seconds
+                    )
+            ).raceWith(waitMs(8000)),
             ShootCommands.stopShoot(robot),
             follow(follower, park())
         );

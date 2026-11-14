@@ -27,21 +27,15 @@ public class AutoLeft extends RobotOpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(60.6411, 134.0226, 90);
-    private final Pose toFlower = poseFactory.of(51.9022, 131.5723, 95);
-    private final Pose toFlowerControl1 = poseFactory.of(57.2828, 121.6769, 0);
-    private final Pose toParkStart = poseFactory.of(51.9022, 131.5723, 95);
-    private final Pose toPark = poseFactory.of(9.2987, 120.385, 90);
-    private final Pose toParkControl1 = poseFactory.of(52.1732, 121.1908, 0);
+    private final Pose toPark = poseFactory.of(12.75, 118.75, 90);
+    private final Pose toParkControl1 = poseFactory.of(58.75, 118.75, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential( // TODO Add commands here
-            waitMs(1500),
+            waitMs(1700),
             robot.intake.on(),
             ShootCommands.startShoot(robot).raceWith(waitMs(8000)),
-            ShootCommands.stopShoot(robot),
-            follow(follower, toFlower()),
-            ShootCommands.startShoot(robot).raceWith(waitMs(2000)),
             ShootCommands.stopShoot(robot),
             follow(follower, toPark())
         );
@@ -83,15 +77,8 @@ public class AutoLeft extends RobotOpMode {
         telemetry.update();
     }
 
-    public Path toFlower() {
-        return Paths.curve(start, toFlowerControl1, toFlower).linear(start, toFlower)
-                .with(
-                        Constants.foresightConfig.maxPathSpeed.at(0.8)
-                );
-    }
-
     public Path toPark() {
-        return Paths.curve(toParkStart, toParkControl1, toPark).linear(toParkStart, toPark)
+        return Paths.curve(start, toParkControl1, toPark).linear(start, toPark)
                 .with(
                         Constants.foresightConfig.maxPathSpeed.at(1.0)
                 );

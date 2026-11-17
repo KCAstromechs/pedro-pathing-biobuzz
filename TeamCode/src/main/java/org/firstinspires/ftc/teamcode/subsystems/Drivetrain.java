@@ -261,6 +261,7 @@ public class Drivetrain {
             follower.update();
             poseTransfer = follower.pose();
 
+            telemetry.addLine("-----Drivetrain Telemetry:");
             telemetry.addData("Current X", follower.pose().x());
             telemetry.addData("Current Y", follower.pose().y());
             telemetry.addData("Current Heading", Math.toDegrees(follower.pose().heading()));

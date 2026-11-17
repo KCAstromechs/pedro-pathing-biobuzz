@@ -95,6 +95,7 @@ public class Intake {
                     break;
             }
 
+            telemetry.addLine("-----Intake Telemetry:");
             telemetry.addData("Intake Current", intakeMotor.getCurrent(CurrentUnit.MILLIAMPS));
             telemetry.addData("Intake Velocity", intakeMotor.getVelocity());
         });

@@ -99,6 +99,9 @@ public class Kicker {
                     kickerServo.setPower(reversePower);
                     break;
             }
+
+            telemetry.addLine("-----Kicker Telemetry:");
+            telemetry.addData("Mode", mode.name());
         });
     }
 

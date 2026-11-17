@@ -15,6 +15,7 @@ public class Robot {
     public final Intake intake;
     public final Flywheel flywheel;
     public final Kicker kicker;
+    public final Blocker blocker;
 //    public final AprilTagWebcam aprilTagWebcam;
 
     public Robot(OpMode opMode) {
@@ -29,6 +30,7 @@ public class Robot {
         intake = new Intake(this);
         flywheel = new Flywheel(this);
         kicker = new Kicker(this);
+        blocker = new Blocker(this);
 //        aprilTagWebcam = new AprilTagWebcam(this);
     }
 }

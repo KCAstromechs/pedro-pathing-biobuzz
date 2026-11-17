@@ -10,6 +10,7 @@ public class ShootCommands {
 
     public static Command startShoot(Robot robot) {
         return sequential(
+                robot.blocker.unblock(),
                 instant(robot.flywheel::turnOn),
                 loop(
                     sequential(
@@ -25,7 +26,8 @@ public class ShootCommands {
     public static Command stopShoot(Robot robot) {
         return sequential(
                 instant(robot.flywheel::turnOff),
-                instant(robot.kicker::turnOff)
+                instant(robot.kicker::turnOff),
+                robot.blocker.block()
         );
     }
 

@@ -25,6 +25,7 @@ public class KitBotMove extends RobotOpMode {
     @Override
     public void start() {
         robot.intake.off().schedule();
+        robot.blocker.block().schedule();
     }
 
     @Override

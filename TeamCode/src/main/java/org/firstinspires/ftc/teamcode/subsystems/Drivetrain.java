@@ -89,11 +89,99 @@ public class Drivetrain {
 
     /**
      * Resets the heading offset back to 0 (aligned with true field zero).
+     * And do complete gyro reset
      */
     public void clearHeadingOffset() {
+        follower.setPose(new Pose(follower.pose().x(), follower.pose().y(), 0.0));
         this.headingOffset = 0.0;
     }
 
+    /**
+     * Robot centric Drive that doesn't rely on Alliance
+     * @param forward forward input (usually left joystick y)
+     * @param strafe strafe input (usually left joystick x)
+     * @param turn turn input (usually right joystick x)
+     */
+    public void arcadeDriveRC(double forward, double strafe, double turn) {
+        // double headingRadians = follower.pose().heading(); // was goofy/didn't work for us
+        double rawHeading = follower.pose().heading() - Math.PI / 2;
+
+        if (lockHeading) {
+            headingController.kP = headingP;
+            headingController.kI = headingI;
+            headingController.kD = headingD;
+
+            double headingError = AngleUnit.normalizeRadians(
+                    headingTargetRadians - rawHeading
+            );
+
+            turn = -headingController.calculate(
+                    headingTargetRadians,
+                    headingError
+            );
+        } else {
+            turn = -signedSquare(turn);
+        }
+
+        double x = strafe - forward;
+
+        double y = strafe + forward;
+//        double x = strafe;
+//        double y = forward;
+        y *= 1.1;
+
+        double denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(turn), 1);
+
+        frontLeft.setPower((y - x + turn) / denominator); // - +
+        frontRight.setPower((y + x - turn) / denominator); // + +
+        backLeft.setPower((y + x + turn) / denominator); // + -
+        backRight.setPower((y - x - turn) / denominator); // - -
+    }
+
+    /**
+     * Arcade Drive that doesn't rely on Alliance
+     * @param forward forward input (usually left joystick y)
+     * @param strafe strafe input (usually left joystick x)
+     * @param turn turn input (usually right joystick x)
+     */
+    public void arcadeDrive(double forward, double strafe, double turn) {
+        // double headingRadians = follower.pose().heading(); // was goofy/didn't work for us
+        double rawHeading = follower.pose().heading() - Math.PI / 2; //
+        double headingRadians = AngleUnit.normalizeRadians(rawHeading - headingOffset);
+
+        if (lockHeading) {
+            headingController.kP = headingP;
+            headingController.kI = headingI;
+            headingController.kD = headingD;
+
+            double headingError = AngleUnit.normalizeRadians(
+                    headingTargetRadians - rawHeading
+            );
+
+            turn = -headingController.calculate(
+                    headingTargetRadians,
+                    headingError
+            );
+        } else {
+            turn = -signedSquare(turn);
+        }
+
+        double x = strafe * Math.cos(headingRadians)
+                - forward * Math.sin(headingRadians);
+
+        double y = strafe * Math.sin(headingRadians)
+                + forward * Math.cos(headingRadians);
+//        double x = strafe;
+//        double y = forward;
+        y *= 1.1;
+
+        double denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(turn), 1);
+
+        frontLeft.setPower((y - x + turn) / denominator); // - +
+        frontRight.setPower((y + x - turn) / denominator); // + +
+        backLeft.setPower((y + x + turn) / denominator); // + -
+        backRight.setPower((y - x - turn) / denominator); // - -
+    }
     public void arcadeDrive(double forward, double strafe, double turn, Alliance alliance) {
         // double headingRadians = follower.pose().heading(); // was goofy/didn't work for us
         double rawHeading = follower.pose().heading() - Math.PI / 2; // 

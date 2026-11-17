@@ -36,8 +36,7 @@ public class KitBotMove extends RobotOpMode {
         robot.drivetrain.arcadeDrive(
                 gamepad1.left_stick_x,
                 -gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                Alliance.current
+                gamepad1.right_stick_x
         );
         //gyro
         if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();
@@ -47,6 +46,16 @@ public class KitBotMove extends RobotOpMode {
         if (robot.flywheel.isOff() && gamepad2.right_bumper) ShootCommands.startShoot(robot).schedule();
         if (robot.flywheel.isOff() && gamepad2.left_bumper) ShootCommands.reverseShoot(robot).schedule();
         if ((robot.flywheel.isOn() || robot.flywheel.isReverse()) && !gamepad2.right_bumper && !gamepad2.left_bumper) ShootCommands.stopShoot(robot).schedule();
+
+        //manual kicker w/ more power
+        if (robot.kicker.isOff() && gamepad2.aWasPressed()) {
+            robot.kicker.on().schedule();
+            robot.flywheel.setShootingVelocity(1350);
+        }
+        if (gamepad2.aWasReleased() && robot.flywheel.isOff()) {
+            robot.kicker.off().schedule();
+            robot.flywheel.setShootingVelocity(1300);
+        }
 
         // Pose turretPose = ...
 
@@ -61,14 +70,14 @@ public class KitBotMove extends RobotOpMode {
 //        if (gamepad2.rightBumperWasPressed()) Alliance.current = Alliance.BLUE;
 
         // Reverse side for field centric button?
-        if (gamepad2.xWasPressed()) robot.drivetrain.setPose(
-                Alliance.current == Alliance.RED ? new Pose(8.1, 7.5, 0) : new Pose(141.5 - 8.1, 7.5, Math.PI)
-        );
+//        if (gamepad2.xWasPressed()) robot.drivetrain.setPose(
+//                Alliance.current == Alliance.RED ? new Pose(8.1, 7.5, 0) : new Pose(141.5 - 8.1, 7.5, Math.PI)
+//        );
 
-        // Reverse only heading for field centric button?
-        if (gamepad2.bWasPressed()) robot.drivetrain.setPose(robot.drivetrain.getPose().withHeading(
-                Alliance.current == Alliance.RED ? 0 : Math.PI
-        ));
+//        // Reverse only heading for field centric button?
+//        if (gamepad2.bWasPressed()) robot.drivetrain.setPose(robot.drivetrain.getPose().withHeading(
+//                Alliance.current == Alliance.RED ? 0 : Math.PI
+//        ));
 
         robot.telemetry.addData("Alliance", Alliance.current);
         robot.telemetry.addData("Trying to reverse", tryingReverse);

@@ -36,8 +36,7 @@ public class KitBotMove extends RobotOpMode {
         robot.drivetrain.arcadeDrive(
                 gamepad1.left_stick_x,
                 -gamepad1.left_stick_y,
-                gamepad1.right_stick_x,
-                Alliance.current
+                gamepad1.right_stick_x
         );
         //gyro
         if (gamepad1.yWasPressed()) robot.drivetrain.resetGyro().schedule();

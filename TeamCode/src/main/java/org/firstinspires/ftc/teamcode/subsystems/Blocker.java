@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 @Config
 public class Blocker {
     private Mode mode = Mode.BLOCK;
-    public static double blockPosition = 0.45;
-    public static double unblockPosition = 0.22;
+    public static double blockPosition = 0.1;
+    public static double unblockPosition = 0.35;
     private final Servo blockerServo;
     private final Telemetry telemetry;
 

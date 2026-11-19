@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.firstinspires.ftc.teamcode.robot.RobotOpMode;
+
 
 @Config
 @TeleOp(name = "FlyWheelTunerC", group = "tuning")
@@ -12,21 +14,21 @@ public class FlyWheelTunerC extends OpMode {
     public DcMotorEx flywheelMotor;
 
 
-    public static double highVel = 1250; // TPS
-    public static double lowVel = 800; // TPS
+    public static double highVel = 1100; // TPS
+    public static double lowVel = 700; // TPS
 
     public static double curTargetVel = highVel;
 
-    double kP = 0;
+    double kP = 0.0064;
 
-    double kF = 0;
+    double kF = 0.00043859649;
 
     double minVelocity = Double.MAX_VALUE;
 
     String [] pidConstantsLabels = {"kP", "kF"};
     double [] stepSizes = {10.0, 1.0, 0.1, 0.01, 0.001, 0.0001, 0.00001};
 
-    int stepIndex = 5; // starting at 0.0001
+    int stepIndex = 6; // starting at 0.00001
     int curConstantIndex = 0;
 
     boolean flywheelActive = false;
@@ -38,10 +40,14 @@ public class FlyWheelTunerC extends OpMode {
 
     @Override
     public void init() {
+//        super.init();
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); // TODO confirm direction
 
         telemetry.addLine("Initialization Complete");
+
+//        robot.blocker.unblock().schedule();
+
     }
 
     @Override
@@ -90,13 +96,13 @@ public class FlyWheelTunerC extends OpMode {
 
         if (gamepad1.dpadRightWasPressed()) {
             if (manualPower < 1) {
-                manualPower += .1;
+                manualPower += .05;
             }
         }
 
         if(gamepad1.dpadLeftWasPressed()) {
             if (manualPower > 0) {
-                manualPower -= .1;
+                manualPower -= .05;
             }
         }
 
@@ -129,18 +135,20 @@ public class FlyWheelTunerC extends OpMode {
             currentConstantVal  = kF;
         }
         telemetry.addLine("Velocity currently measured in TicksPerSec");
-        telemetry.addData("Target Velocity", curTargetVel);
-        telemetry.addData("Minimum Velocity", minVelocity);
-        telemetry.addData("Battery Voltage ", voltage);
-        telemetry.addData("CurrentVelocity", "%.2f", curVel);
-        telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Is flywheel active?", flywheelActive);
+        telemetry.addData("Manual Power Mode", flyWheelDirectPowerMode);
+        telemetry.addData("Target Velocity", curTargetVel);
+        telemetry.addData("CurrentVelocity", "%.2f", curVel);
+        telemetry.addData("Error", error);
+        telemetry.addData("Minimum Velocity", Math.max(0, Math.min(10000, minVelocity)));
+        telemetry.addData("Battery Voltage ", voltage);
+        telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Last PID calc output", lastPIDCalculate);
         telemetry.addData("Manual Power at ", manualPower);
         telemetry.addLine("------------------------------");
-        telemetry.addData("Current Tuning Constant (A Button)", currentConstant);
+        telemetry.addData("Current Tuning Constant (R Bumper)", currentConstant);
         telemetry.addData("Current constant value", "%.5f (D-Pad U/D)", currentConstantVal);
-        telemetry.addData("Step Size", "%.5f (B Button)", stepSizes[stepIndex]);
+        telemetry.addData("Step Size", "%.5f (A Button)", stepSizes[stepIndex]);
         telemetry.addLine("------------------------------");
         telemetry.addData("kP", "%.5f", kP);
         telemetry.addData("kF", "%.5f", kF);

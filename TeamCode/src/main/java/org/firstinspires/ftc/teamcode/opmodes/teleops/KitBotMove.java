@@ -51,11 +51,11 @@ public class KitBotMove extends RobotOpMode {
         //manual kicker w/ more power
         if (robot.kicker.isOff() && gamepad2.aWasPressed()) {
             robot.kicker.on().schedule();
-            robot.flywheel.setShootingVelocity(1350);
+            robot.flywheel.setShootingVelocity(1150);
         }
         if (gamepad2.aWasReleased() && robot.flywheel.isOff()) {
             robot.kicker.off().schedule();
-            robot.flywheel.setShootingVelocity(1300);
+            robot.flywheel.setShootingVelocity(1110);
         }
 
         // Pose turretPose = ...

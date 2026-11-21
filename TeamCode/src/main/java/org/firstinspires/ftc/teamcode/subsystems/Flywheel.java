@@ -24,7 +24,7 @@ public class Flywheel {
         public double kF = 0.00043859649;
         public int velocityTolerance = 20; //in encoder ticks/sec
         public double shootingVelocity = 1110; //in encoder ticks/sec
-        public double idleVelocity = 500; // was 0
+        public double idleVelocity = 700; // was 0
         private double targetVelocity = 0;
     }
 

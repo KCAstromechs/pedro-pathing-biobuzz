@@ -23,7 +23,7 @@ public class Flywheel {
         public double kP = 0.0064;
         public double kF = 0.00043859649;
         public int velocityTolerance = 20; //in encoder ticks/sec
-        public double shootingVelocity = 1110; //in encoder ticks/sec
+        public double shootingVelocity = 1100; //in encoder ticks/sec
         public double idleVelocity = 700; // was 0
         private double targetVelocity = 0;
     }
